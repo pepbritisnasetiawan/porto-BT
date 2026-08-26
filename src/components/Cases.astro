@@ -41,7 +41,7 @@ const filters = [
         data-domain={c.domain}
       >
         <div class="case__head">
-          <span class="pill pill--accent">{c.codename}</span>
+          <a class="pill pill--accent" href={`/cases/${c.id}`} aria-label={`Open ${c.codename} case file`}>{c.codename} →</a>
           <time class="meta-label case__date">{c.date}</time>
         </div>
         <p class="case__summary">{c.summary}</p>
@@ -58,6 +58,7 @@ const filters = [
           </div>
         </dl>
         <footer class="case__links">
+          <a href={`/cases/${c.id}`} style="font-weight:600">Read report →</a>
           {c.links.map((l) =>
             l.url ? (
               <a href={l.url} rel={l.url.startsWith('http') ? 'noopener' : undefined} target={l.url.startsWith('http') ? '_blank' : undefined}>

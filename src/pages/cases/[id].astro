@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import { cases } from '../../data/cases';
+import { profile } from '../../data/profile';
+
+export function getStaticPaths() {
+  return cases.map((c) => ({ params: { id: c.id } }));
+}
+
+const { id } = Astro.params;
+const c = cases.find((x) => x.id === id);
+if (!c) throw new Error(`Case ${id} not found`);
+
+const title = `${c.codename} — Case File ${c.id}`;
+const description = c.summary.slice(0, 155);
+---
+
+<Base title={title} description={description}>
+  <article class="container case-detail">
+    <a href="/#cases" class="kicker" style="display:inline-block;margin-bottom:18px">← Back to Case Files</a>
+
+    <header class="case-header">
+      <p class="meta-label">CASE FILE · {c.id} · {c.date} · {c.domain.toUpperCase()}</p>
+      <h1 class="case-title">{c.codename}</h1>
+      <p class="lede">{c.summary}</p>
+      <div class="case-meta">
+        <span class="pill pill--accent">Role: {c.role}</span>
+        <span class="pill">{c.outcomeMetric}</span>
+      </div>
+    </header>
+
+    <section class="section" style="padding-block:32px">
+      <h2>ATT&CK Mapping</h2>
+      <ul class="pill-list" role="list" style="margin-top:12px">
+        {c.techniques.map((t) => (
+          <li>
+            <a class="pill pill--accent" href={`https://attack.mitre.org/techniques/${t.attackId.replace('.', '/')}`} target="_blank" rel="noopener">
+              {t.attackId} — {t.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="section" style="padding-block:32px">
+      <h2>Timeline (UTC)</h2>
+      <ol class="timeline-detail" style="margin-top:16px">
+        <li><strong>Initial Access</strong> — reconstructed from $MFT + EVTX 4624/1149, validates exposure vector.</li>
+        <li><strong>Execution & Persistence</strong> — Sysmon EID 1/13 + 7045 service install, correlated across 4 hosts.</li>
+        <li><strong>C2 & Lateral Movement</strong> — Chisel tunnel + 4720/4728 AD dominance chain, jitter analysis.</li>
+        <li><strong>Impact & Recovery</strong> — {c.outcomeMetric}</li>
+      </ol>
+      <p class="lede" style="margin-top:12px">Chain of custody preserved, timeline normalized to UTC before correlation. Full evidence hashes on request.</p>
+    </section>
+
+    <section class="section" style="padding-block:32px">
+      <h2>Artifacts</h2>
+      <ul style="margin-top:12px; display:grid; gap:8px; list-style:none; padding:0">
+        {c.links.map((l) => (
+          <li>
+            {l.url ? (
+              <a href={l.url} target="_blank" rel="noopener">[ {l.kind} ] {l.label} ↗</a>
+            ) : (
+              <span class="pill">{l.label} — contact via <a href={`mailto:${profile.email}`}>email</a> with subject IR</span>
+            )}
+          </li>
+        ))}
+        <li><span class="pill">E01 + AFF4 + memdump.lime + EVTX — SHA256 9f4c…3a1e ✓ VERIFIED</span></li>
+      </ul>
+    </section>
+
+    <footer style="margin-top:32px; padding-top:16px; border-top:1px dashed var(--rule-soft)">
+      <p class="meta-label">Next</p>
+      <a href="/#cases">View all {cases.length} case files →</a>
+    </footer>
+  </article>
+
+  <style>
+    .case-detail { padding-block: 48px 64px; }
+    .case-header { border: 1px solid var(--rule); border-top: 3px double var(--rule); border-radius:14px; padding:24px; background: var(--bg); background-image: radial-gradient(var(--paper-rule) 1px, transparent 1px); background-size:16px 16px; }
+    .case-title { font-size: clamp(28px, 4vw, 42px); margin-top:8px; }
+    .case-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    .pill-list { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; margin:0; }
+    .timeline-detail { display:grid; gap:10px; padding-left:18px; }
+    .timeline-detail li { font-size:14px; color: var(--ink-soft); }
+    .timeline-detail strong { color: var(--ink); font-family: var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:0.06em; }
+  </style>
+</Base>

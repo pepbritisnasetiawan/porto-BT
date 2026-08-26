@@ -50,8 +50,8 @@ export const skillMatrix: SkillGroup[] = [
 ];
 
 export const profile = {
-  name: 'unamed',
-  initials: 'U',
+  name: '0x013H',
+  initials: '0H',
   roleLine: 'Security Engineer · DFIR · Blue Team · SOC Analyst',
   tagline:
     'I defend networks the way they deserve to be defended: every incident reconstructed from raw telemetry, every detection built from first principles before a single vendor tool gets trusted.',
@@ -59,7 +59,7 @@ export const profile = {
   email: 'you@example.com',
   cvUrl: '/cv.pdf',
   socials: [
-    { platform: 'github', url: 'https://github.com/yourhandle', label: 'GitHub' },
+    { platform: 'github', url: 'https://github.com/pepbritisnasetiawan', label: 'GitHub' },
     { platform: 'linkedin', url: 'https://linkedin.com/in/yourhandle', label: 'LinkedIn' },
     { platform: 'x', url: 'https://x.com/yourhandle', label: 'X / Twitter' },
     { platform: 'email', url: 'mailto:you@example.com', label: 'Email' },

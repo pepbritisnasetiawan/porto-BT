@@ -1,0 +1,54 @@
+---
+import { profile } from '../data/profile';
+const formAction = 'https://formspree.io/f/xplaceholder'; // replace with your Formspree ID
+---
+
+<section class="section container" id="contact-form">
+  <header class="section-head reveal">
+    <p class="kicker">Contact — IR: routed first</p>
+    <h2>Request a report or ask a question</h2>
+    <p class="lede">For incident response, put <strong>IR</strong> in subject — routed first. For everything else, expect a reply within 24h. PGP on request.</p>
+  </header>
+
+  <form class="contact-form reveal" action={formAction} method="POST">
+    <div class="form-grid">
+      <label class="form-field">
+        <span>Name</span>
+        <input type="text" name="name" required autocomplete="name" placeholder="Your name" />
+      </label>
+      <label class="form-field">
+        <span>Email</span>
+        <input type="email" name="email" required autocomplete="email" placeholder={profile.email} />
+      </label>
+    </div>
+    <label class="form-field">
+      <span>Subject</span>
+      <input type="text" name="subject" required placeholder="IR — or general question" />
+    </label>
+    <label class="form-field">
+      <span>Message</span>
+      <textarea name="message" rows="5" required placeholder="Tell me about the exhibit, timeline, or detection you need..."></textarea>
+    </label>
+    <!-- honeypot -->
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+    <input type="hidden" name="_subject" value="porto contact" />
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary">Send message →</button>
+      <span class="form-note">or <a href={`mailto:${profile.email}?subject=IR`}>{profile.email} ↗</a></span>
+    </div>
+    <p class="form-foot meta-label">By sending, you agree to be contacted about this inquiry only. No newsletter, no tracking.</p>
+  </form>
+</section>
+
+<style>
+  .contact-form { display:grid; gap:16px; max-width: 720px; margin-top:24px; border:1px solid var(--rule); border-top:3px double var(--rule); border-radius:14px; padding:24px; background:var(--bg); background-image: radial-gradient(var(--paper-rule) 1px, transparent 1px); background-size:16px 16px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-field { display:grid; gap:6px; }
+  .form-field span { font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-mute); }
+  .form-field input, .form-field textarea { font-family:var(--font-mono); font-size:14px; padding:10px 12px; border:1px solid var(--rule-soft); border-radius:8px; background:var(--bg-surface); color:var(--ink); }
+  .form-field input:focus, .form-field textarea:focus { outline:2px solid var(--blueprint); outline-offset:2px; border-color:var(--blueprint); }
+  .form-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:4px; }
+  .form-note { font-family:var(--font-mono); font-size:12px; color:var(--ink-mute); }
+  .form-foot { margin-top:8px; }
+  @media (max-width: 640px) { .form-grid { grid-template-columns:1fr; } }
+</style>
