@@ -15,7 +15,7 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const ogImage = new URL('/og-image.svg', Astro.site).toString();
+const ogImage = new URL(`${import.meta.env.BASE_URL}og-image.svg`, Astro.site).toString();
 const github = profile.socials.find((s) => s.platform === 'github')?.url;
 ---
 
@@ -28,7 +28,7 @@ const github = profile.socials.find((s) => s.platform === 'github')?.url;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />

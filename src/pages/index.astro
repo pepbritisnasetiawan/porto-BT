@@ -40,8 +40,8 @@ const terminalLines = [
         <p class="lede hero__lede">{profile.tagline}</p>
 
         <div class="hero__actions">
-          <a class="btn btn--primary" href="#cases">View Case Files</a>
-          <a class="btn" href={profile.cvUrl}>Download CV ↓</a>
+          <a class="btn btn--primary" href={`${import.meta.env.BASE_URL}#cases`}>View Case Files</a>
+          <a class="btn" href={`${import.meta.env.BASE_URL}${profile.cvUrl.replace(/^\//, '')}`}>Download CV ↓</a>
           <a
             class="btn"
             href={profile.socials.find((s) => s.platform === 'github')?.url}
