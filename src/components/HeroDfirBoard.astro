@@ -3,8 +3,9 @@
 
 <figure class="hero-board">
   <div class="hero-board__head">
-    <span>FIG_000 · INCIDENT RESPONSE · NIST 800-61</span>
+    <span>CASE_000 · INCIDENT RESPONSE · NIST 800-61</span>
     <span>6-STEP LIFECYCLE</span>
+    <span class="evidence-stamp">EVIDENCE</span>
   </div>
   <div class="hero-board__body">
     <svg viewBox="0 0 360 240" role="img" aria-labelledby="heroBoardTitle" class="hero-board__svg">
@@ -121,6 +122,20 @@
     color: var(--ink-mute);
   }
   .hero-board__head span:first-child { color: var(--blueprint); }
+  .hero-board__head { position: relative; }
+  .evidence-stamp {
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    border: 1.8px solid var(--evidence);
+    color: var(--evidence);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    padding: 2px 7px;
+    transform: rotate(5deg);
+    background: var(--bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
   .hero-board__body { padding: 12px 10px 8px; }
   .hero-board__svg { width: 100%; height: auto; display: block; }
   .hero-board__foot {

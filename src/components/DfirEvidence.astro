@@ -52,10 +52,30 @@
 
 <style>
   .dfir-evidence {
-    border: 1px solid var(--rule-soft);
+    border: 1px solid var(--rule);
+    border-top: 3px double var(--rule);
     background: var(--bg-surface);
+    background-image: radial-gradient(var(--paper-rule) 1px, transparent 1px);
+    background-size: 16px 16px;
     border-radius: 14px;
     overflow: hidden;
+    position: relative;
+  }
+  .dfir-evidence::after {
+    content: "EVIDENCE";
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    border: 1.6px solid var(--evidence);
+    color: var(--evidence);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    padding: 2px 7px;
+    transform: rotate(4deg);
+    background: var(--bg-surface);
+    opacity: 0.92;
+    pointer-events: none;
   }
   .dfir-evidence__head {
     display: flex;
@@ -66,6 +86,7 @@
     padding: 10px 16px;
     border-bottom: 1px solid var(--rule-soft);
     background: repeating-linear-gradient(90deg, var(--paper-rule) 0 1px, transparent 1px 8px);
+    position: relative;
   }
   .dfir-label {
     font-family: var(--font-mono);

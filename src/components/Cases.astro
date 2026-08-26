@@ -117,9 +117,12 @@ const filters = [
 
   .case {
     padding: 28px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--rule);
+    border-top: 3px double var(--rule);
     border-radius: 14px;
-    background: var(--surface);
+    background: var(--bg);
+    background-image: radial-gradient(var(--paper-rule) 1px, transparent 1px);
+    background-size: 16px 16px;
     display: flex;
     flex-direction: column;
     gap: 18px;
