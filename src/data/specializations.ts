@@ -1,4 +1,4 @@
-export type Domain = 'dfir' | 'detection' | 'malware' | 'hunt' | 'soc' | 'cloud';
+export type Domain = 'dfir' | 'detection' | 'malware' | 'hunt' | 'soc' | 'cloud' | 'audit';
 
 export interface Specialization {
   id: Domain;
@@ -61,5 +61,14 @@ export const specializations: Specialization[] = [
     blurb:
       'Guardrails as code. IAM blast-radius audits, container escape detection, audit-log pipelines for AWS and K8s — because the adversary already moved in.',
     tools: ['CloudTrail', 'Falco', 'Trivy', 'Terraform', 'Kubernetes'],
+  },
+  {
+    id: 'audit',
+    kicker: 'Adversarial review',
+    title: 'Smart Contract Audit & Formal Review',
+    blurb:
+      'Code4rena-grade reviews: invariant testing, 4-gate settlement analysis, Hyperliquid precompile semantics — every finding ships with PoC and quantified impact.',
+    tools: ['Foundry', 'Slither', '4naly3er', 'Halmos', 'Certora'],
+    caseRef: 'cf-monetrix-pm',
   },
 ];
