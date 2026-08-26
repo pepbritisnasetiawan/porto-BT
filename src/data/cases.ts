@@ -241,4 +241,220 @@ export const cases: CaseFile[] = [
     outcomeMetric: 'Disk + mem + pcap triaged · Volatility + Wireshark · IOCs on request',
     links: [{ kind: 'writeup', url: null, label: 'Writeup_Operation_Dark_Entry.md — on request' }],
   },
+  {
+    id: 'cf-sherlock-corpdown2',
+    codename: 'Sherlock: CorpDown-2 — AD Lateral',
+    domain: 'dfir',
+    date: '2025-08',
+    summary:
+      'HTB Sherlock CorpDown-2: Active Directory lateral movement via DCSync + Golden Ticket. Reconstructed from NTDS.dit + SYSTEM hive + EVTX 4624/4672, traced krbtgt hash dump, forged TGT, and lateral PSExec to domain controller. Validated with Mimikatz logs and Sysmon EID 1 process ancestry.',
+    role: 'DFIR analyst · HTB',
+    techniques: [
+      { attackId: 'T1003.003', name: 'OS Credential Dumping: NTDS' },
+      { attackId: 'T1558.001', name: 'Steal or Forge Kerberos Tickets: Golden Ticket' },
+      { attackId: 'T1021.001', name: 'Remote Services: DCOM' },
+    ],
+    outcomeMetric: 'DCSync + Golden Ticket chain reconstructed · 3 DCs triaged',
+    links: [{ kind: 'writeup', url: null, label: 'Sherlock report — on request' }],
+  },
+  {
+    id: 'cf-sherlock-finalir',
+    codename: 'Sherlock: Final-IR — Ransomware Dropper',
+    domain: 'dfir',
+    date: '2025-07',
+    summary:
+      'HTB Sherlock Final-IR: ransomware dropper triage — initial LNK → PowerShell → svch0st.exe staging in C:\Temp, YandexBrowser 24.4.5.498 CVE-2024-6473 DLL sideload wldp.dll (SHA256 a1a17ebd...), Sliver C2 18.192.12.126:8888. Built Capstone disassembly + PE header timeline.',
+    role: 'DFIR analyst · HTB',
+    techniques: [
+      { attackId: 'T1204.002', name: 'User Execution: Malicious File' },
+      { attackId: 'T1574.002', name: 'DLL Side-Loading' },
+      { attackId: 'T1071.001', name: 'Application Layer Protocol' },
+    ],
+    outcomeMetric: 'LNK + sideload + Sliver C2 chain · 15/15 tasks',
+    links: [{ kind: 'writeup', url: null, label: 'Sherlock report — on request' }],
+  },
+  {
+    id: 'cf-sherlock-jobapplicant',
+    codename: 'Sherlock: JobApplicant — HR Lure',
+    domain: 'dfir',
+    date: '2025-06',
+    summary:
+      'HTB Sherlock JobApplicant: HR phishing lure with resume.docm macro → PowerShell Empire stager → in-memory Mimikatz. Parsed $MFT + Office MRU + Sysmon EID 1 parent spoof, recovered macro VBA and C2 10.0.0.5:443.',
+    role: 'DFIR analyst · HTB',
+    techniques: [
+      { attackId: 'T1566.001', name: 'Phishing: Spearphishing Attachment' },
+      { attackId: 'T1059.001', name: 'PowerShell' },
+      { attackId: 'T1003.001', name: 'LSASS Memory' },
+    ],
+    outcomeMetric: 'Macro + Empire stager deobfuscated · 8/10 tasks',
+    links: [{ kind: 'writeup', url: null, label: 'Sherlock report — on request' }],
+  },
+  {
+    id: 'cf-sherlock-lockpick3',
+    codename: 'Sherlock: LockPick3 — KeePass Vault',
+    domain: 'dfir',
+    date: '2025-05',
+    summary:
+      'HTB Sherlock LockPick3: KeePass .kdbx vault forensics — memory dump + hiberfil + pagefile triage, master key reconstruction via Volatility keepass plugin, and vault brute-force with hashcat. Recovered 12 creds, mapped to lateral RDP.',
+    role: 'DFIR analyst · HTB',
+    techniques: [
+      { attackId: 'T1003', name: 'OS Credential Dumping' },
+      { attackId: 'T1555', name: 'Credentials from Password Stores' },
+    ],
+    outcomeMetric: 'KeePass vault cracked · 12 creds recovered',
+    links: [{ kind: 'writeup', url: null, label: 'Sherlock report — on request' }],
+  },
+  {
+    id: 'cf-sherlock-shadowmonarch',
+    codename: 'Sherlock: ShadowMonarch — Shadow Copy',
+    domain: 'dfir',
+    date: '2025-05',
+    summary:
+      'HTB Sherlock ShadowMonarch: Volume Shadow Copy abuse — vssadmin + diskshadow logs, SYSTEM hive mountpoints, and NTFS $LogFile carving. Proved attacker exfiltrated shadow copies to stage 7z archives, validated with libvshadow.',
+    role: 'DFIR analyst · HTB',
+    techniques: [
+      { attackId: 'T1490', name: 'Inhibit System Recovery' },
+      { attackId: 'T1560.003', name: 'Archive via Custom Method' },
+    ],
+    outcomeMetric: 'VSS abuse + NTFS carve · 7z staging proven',
+    links: [{ kind: 'writeup', url: null, label: 'Sherlock report — on request' }],
+  },
+  {
+    id: 'cf-sherlock-stonks',
+    codename: 'Sherlock: Stonks — Trading App RE',
+    domain: 'malware',
+    date: '2025-04',
+    summary:
+      'HTB Sherlock Stonks: trojanized trading app (Electron) — ASAR unpack, Node.js obfuscation, and C2 over WebSocket to 185.10.20.5. Reverse engineered with Ghidra + Electron ASAR + Wireshark, extracted wallet stealer config.',
+    role: 'Malware analyst · HTB',
+    techniques: [
+      { attackId: 'T1027', name: 'Obfuscated Files' },
+      { attackId: 'T1041', name: 'Exfiltration Over C2 Channel' },
+    ],
+    outcomeMetric: 'ASAR deobfuscated · WebSocket C2 extracted',
+    links: [{ kind: 'writeup', url: null, label: 'RE walkthrough — on request' }],
+  },
+  {
+    id: 'cf-sherlock-velvetthrone',
+    codename: 'Sherlock: VelvetThrone — Web Shell',
+    domain: 'dfir',
+    date: '2025-04',
+    summary:
+      'HTB Sherlock VelvetThrone: IIS web shell forensics — w3svc logs + .NET web.config + AntWebShell detection. Traced China Chopper POST to /Upload/files.aspx, recovered 2 web shells, and correlated with Sysmon EID 1 w3wp.exe child processes.',
+    role: 'DFIR analyst · HTB',
+    techniques: [
+      { attackId: 'T1505.003', name: 'Server Software Component: Web Shell' },
+      { attackId: 'T1071.001', name: 'Web Protocols' },
+    ],
+    outcomeMetric: '2 web shells recovered · IIS logs correlated',
+    links: [{ kind: 'writeup', url: null, label: 'Sherlock report — on request' }],
+  },
+  {
+    id: 'cf-sherlock-shadowstream',
+    codename: 'Sherlock: ShadowStream — Stream Phishing',
+    domain: 'hunt',
+    date: '2025-03',
+    summary:
+      'HTB Sherlock ShadowStream: streaming service phishing — OAuth token theft via Evilginx, mailbox delegation, and Teams exfiltration. Hunted via M365 audit logs + Azure AD sign-ins, built KQL hunt for anomalous token refresh.',
+    role: 'Threat hunter · HTB',
+    techniques: [
+      { attackId: 'T1566.002', name: 'Phishing: Spearphishing Link' },
+      { attackId: 'T1528', name: 'Steal Application Access Token' },
+    ],
+    outcomeMetric: 'Evilginx flow reconstructed · KQL hunt shipped',
+    links: [{ kind: 'writeup', url: null, label: 'Hunt report — on request' }],
+  },
+  {
+    id: 'cf-sat-ghost-intel',
+    codename: 'SAT-TNI: Ghost Intel — Insider S3 Exfil',
+    domain: 'dfir',
+    date: '2024-03',
+    summary:
+      'SAT-TNI Ghost Intel: insider Karen Riley exfiltrated to AntiCorp Gr04p S3 for $20k PayPal. Decoded Discord snowflake IDs (channel 1152635915429232640 → 2023-09-16 16:03:37 UTC) for DM initiation, NDA_Instructions.pdf via cdn.discordapp.com, and PayPal S3 exfil via memory IOCs.txt + NDA_Instructions.pdf.',
+    role: 'DFIR analyst · SAT-TNI',
+    techniques: [
+      { attackId: 'T1005', name: 'Data from Local System' },
+      { attackId: 'T1048', name: 'Exfiltration Over Alternative Protocol' },
+      { attackId: 'T1069', name: 'Permission Groups Discovery' },
+    ],
+    outcomeMetric: 'Discord snowflake decoded · S3 exfil proven · 2 IOCs',
+    links: [{ kind: 'writeup', url: null, label: 'WRITEUP_OPERATION_GHOST_INTEL.md — on request' }],
+  },
+  {
+    id: 'cf-sat-golden-trap',
+    codename: 'SAT-TNI: Golden Trap — LNK + Sliver',
+    domain: 'dfir',
+    date: '2025-01',
+    summary:
+      'SAT-TNI Golden Trap: LNK 2025-GiveAways.lnk (2025-01-26 16:17:15 UTC) → C:\Temp\svch0st.exe (svchost typo) → Get-Package → YandexBrowser 24.4.5.498 CVE-2024-6473 → certutil.exe → wldp.dll (SHA256 a1a17ebd90610d808e761811d17da314, 11s coded sleep, Global\YandaExeMutex) → yanda.tmp Sliver 18.192.12.126:8888. Capstone + pefile RE.',
+    role: 'DFIR analyst · SAT-TNI',
+    techniques: [
+      { attackId: 'T1204.002', name: 'Malicious File' },
+      { attackId: 'T1574.002', name: 'DLL Side-Loading' },
+      { attackId: 'T1071', name: 'Application Layer Protocol' },
+    ],
+    outcomeMetric: 'LNK + Sliver chain · 15/15 Qs · wldp.dll RE',
+    links: [{ kind: 'writeup', url: null, label: 'WALKTHROUGH_Operation_Golden_Trap.md — on request' }],
+  },
+  {
+    id: 'cf-sat-patch-hijack',
+    codename: 'SAT-TNI: Patch Hijack — Kerberoast',
+    domain: 'dfir',
+    date: '2024-12',
+    summary:
+      'SAT-TNI Patch Hijack: Kerberoasting + DCSync lab — lsass.DMP + .kirbi TGT/TGS (krbtgt, cifs, ldap, stored.local) triage, hashcat kerberoast, and lateral via PsExec. Validated with Mimikatz kirbi parsing and Sysmon EID 1.',
+    role: 'DFIR analyst · SAT-TNI',
+    techniques: [
+      { attackId: 'T1558.003', name: 'Kerberoasting' },
+      { attackId: 'T1003.003', name: 'NTDS' },
+    ],
+    outcomeMetric: '7 kirbi + lsass.DMP triaged · Kerberoast cracked',
+    links: [{ kind: 'writeup', url: null, label: 'Operation Patch Hijack — on request' }],
+  },
+  {
+    id: 'cf-sat-trojan-sensor',
+    codename: 'SAT-TNI: Trojan Sensor — ESP32 Firmware',
+    domain: 'malware',
+    date: '2024-10',
+    summary:
+      'SAT-TNI Trojan Sensor: ESP32 4M fw-backup-4M.bin forensics — hexdump + strings + partition table, NVS Wi-Fi creds, FreeRTOS tasks, and FTP buffer overflow → reverse shell. Manual Python without binwalk, extracted C2 IP and shellcode via capstone.',
+    role: 'Malware analyst · SAT-TNI',
+    techniques: [
+      { attackId: 'T1203', name: 'Exploitation for Client Execution' },
+      { attackId: 'T1059', name: 'Command and Scripting Interpreter' },
+    ],
+    outcomeMetric: '4M dump parsed · Wi-Fi + C2 extracted · 11/11 tasks',
+    links: [{ kind: 'writeup', url: null, label: 'WALKTHROUGH_Operation_Trojan_Sensor.md — on request' }],
+  },
+  {
+    id: 'cf-sat-silent-infiltration',
+    codename: 'SAT-TNI: Silent Infiltration — Lateral',
+    domain: 'dfir',
+    date: '2024-11',
+    summary:
+      'SAT-TNI Silent Infiltration: lateral movement via WMI + WinRM, registry Run key persistence, and SIEM evasion. Correlated $MFT, EVTX 7045, and Sysmon EID 13 Registry Value Set to prove persistence and lateral PSExec.',
+    role: 'DFIR analyst · SAT-TNI',
+    techniques: [
+      { attackId: 'T1021.006', name: 'Windows Remote Management' },
+      { attackId: 'T1547.001', name: 'Registry Run Keys' },
+    ],
+    outcomeMetric: 'WMI + Run key persistence proven · lateral via WinRM',
+    links: [{ kind: 'writeup', url: null, label: 'WRITEUP.md — on request' }],
+  },
+  {
+    id: 'cf-sat-silentshell',
+    codename: 'SAT-TNI: Silent WebShell — IIS',
+    domain: 'dfir',
+    date: '2024-11',
+    summary:
+      'SAT-TNI Silent WebShell: IIS web shell via AntWebShell — w3wp.exe child processes, web.config tamper, and China Chopper traffic. Validated with Sysmon EID 1 and IIS logs, recovered 1 web shell and 2 TGS tickets.',
+    role: 'DFIR analyst · SAT-TNI',
+    techniques: [
+      { attackId: 'T1505.003', name: 'Web Shell' },
+      { attackId: 'T1190', name: 'Exploit Public-Facing Application' },
+    ],
+    outcomeMetric: '1 web shell + 2 TGS recovered · IIS logs correlated',
+    links: [{ kind: 'writeup', url: null, label: 'Silent WebShell — on request' }],
+  },
+
 ];
