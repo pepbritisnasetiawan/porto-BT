@@ -43,18 +43,23 @@ const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
       </div>
     </header>
 
-    <!-- Scope & Tools (DFIR report §2) -->
+    <!-- Scope & Tools (DFIR report §2) — HTB format for non-audit -->
     <section class="section" style="padding-block:32px">
-      <h2>Scope & Tools</h2>
-      <p class="lede">Scope: {isDFIR ? 'Disk, memory, EVTX, registry, and network artifacts — triaged with KAPE / Volatility / python-evtx, correlated via UTC timeline.' : 'Code, invariant, and settlement-pipeline review with Foundry / Slither / Halmos.'} All findings cross-validated across at least two independent sources.</p>
+      <h2>Scope & Constraints</h2>
+      <p class="lede">
+        {isDFIR
+          ? 'Target: SOC L2/L3, Incident Responders. Scope: ShellBags (BagMRU/Bags), UserAssist (ROT13), RecentDocs, TypedPaths, $MFT, EVTX Sysmon, memory. Constraint: triage KAPE RegistryHives only — no raw disk image full MFT or RAM dump beyond provided exhibits. All timestamps UTC.'
+          : 'Scope: Code, invariant, and settlement-pipeline review with Foundry / Slither / Halmos. Constraint: scope limited to in-scope contracts, no live mainnet state.'}
+        All findings cross-validated across at least two independent sources.
+      </p>
       <table class="report-table" style="margin-top:16px">
         <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
         <tbody>
           {isDFIR ? (
             <>
-              <tr><td><code>KAPE / Velociraptor</code></td><td>Triage acquisition (RegistryHives, $MFT, EVTX)</td></tr>
-              <tr><td><code>Volatility 3 / python-evtx</code></td><td>Memory & Sysmon EVTX parsing (EID 1/3/11/22)</td></tr>
-              <tr><td><code>Plaso / mactime</code></td><td>Timeline normalization to UTC</td></tr>
+              <tr><td><code>KAPE 1.4.0.3 / Velociraptor</code></td><td>Triage — RegistryHivesUser, $MFT, EVTX, Amcache</td></tr>
+              <tr><td><code>python-evtx + Registry</code></td><td>Parse Sysmon EVTX (EID 1/3/11/22) + NTUSER.DAT/UsrClass.dat (ROT13)</td></tr>
+              <tr><td><code>Volatility 3 + Plaso</code></td><td>Memory pslist + timeline UTC normalization (mactime)</td></tr>
             </>
           ) : (
             <>
@@ -64,6 +69,19 @@ const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
           )}
         </tbody>
       </table>
+      {isDFIR && (
+        <>
+          <h3 style="margin-top:18px; font-size:14px">Glossary (HTB DFIR)</h3>
+          <table class="report-table" style="margin-top:8px">
+            <tbody>
+              <tr><th>ShellBags</th><td>Registry <code>BagMRU/Bags</code> — view preferences proving folder interaction even after deletion</td></tr>
+              <tr><th>UserAssist</th><td>ROT13-encoded GUI execution log — proves <code>everything.exe</code> / malware launch</td></tr>
+              <tr><th>RecentDocs</th><td>MRU list of opened docs — proves <code>1.zip / a.zip</code> access</td></tr>
+              <tr><th>LastWriteTime</th><td>Registry key FILETIME UTC — Explorer interaction time (not file creation)</td></tr>
+            </tbody>
+          </table>
+        </>
+      )}
     </section>
 
     <section class="section" style="padding-block:32px">
@@ -79,30 +97,54 @@ const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
       </ul>
     </section>
 
-    <!-- DFIR Timeline (report §4) -->
-    <section class="section" style="padding-block:32px">
-      <h2>Timeline (UTC) — Granular Playbook</h2>
-      <table class="report-table" style="margin-top:16px">
-        <thead><tr><th>Time (UTC)</th><th>Artefact</th><th>Finding</th></tr></thead>
-        <tbody>
-          <tr><td><code>07:26:57</code></td><td>NTUSER.DAT UserAssist (ROT13)</td><td>Initial tool staging — <code>everything.exe</code> or <code>Preventivo24.02.14.exe.exe</code> execution via Explorer</td></tr>
-          <tr><td><code>07:31:05</code></td><td>UsrClass.dat BagMRU LastWrite</td><td>Network recon — <code>\\Prod-ns-2\prodshare</code> / <code>OT Station 3 VPN</code> access</td></tr>
-          <tr><td><code>07:34:02-30</code></td><td>RecentDocs + $MFT</td><td>Staging <code>C:\Users\steve\Pictures\a</code> → <code>a.zip</code> / <code>Dam Construction Engineer Plans.zip</code></td></tr>
-          <tr><td><code>14:22-18:40</code></td><td>Sysmon EID 1/11/22 + mem</td><td>C2 162.125.81.15 / 93.184.216.34 — {c.outcomeMetric}</td></tr>
-        </tbody>
-      </table>
-      <p class="lede" style="margin-top:12px">All timestamps UTC-normalized before correlation; LastWriteTime = Explorer interaction, not file creation. Full hashes on request.</p>
-    </section>
-
-    <!-- IOCs -->
-    <section class="section" style="padding-block:32px">
-      <h2>IOCs & Evidence</h2>
-      <pre class="ioc-block"><code>File: 1.zip | everything.exe | Preventivo24.02.14.exe.exe (SHA256 0CB44C4F8273750FA40497FCA81E850F73927E70B13C8F80CDCFEE9D1478E6F3)
+    <!-- HTB DFIR Timeline (report §4) — granular playbook for non-audit -->
+    {isDFIR ? (
+      <>
+        <section class="section" style="padding-block:32px">
+          <h2>Timeline (UTC) — Zero-Knowledge Playbook</h2>
+          <p class="lede" style="margin-top:8px">Each row is a hypothesis → artefact → cross-validation. LastWriteTime is Explorer interaction, not file creation.</p>
+          <table class="report-table" style="margin-top:16px">
+            <thead><tr><th>Time (UTC)</th><th>Artefact (HTB)</th><th>Finding & Validation</th></tr></thead>
+            <tbody>
+              <tr><td><code>07:26:57</code></td><td>NTUSER.DAT UserAssist (ROT13) + BagMRU 1\0</td><td>Tool staging — <code>1.zip</code> → <code>everything.exe</code> (EID 1, T1083) — RecentDocs + BagMRU cross-validated</td></tr>
+              <tr><td><code>07:31:05</code></td><td>UsrClass.dat BagMRU 1\1\2 LastWrite</td><td>Recon — <code>OT Station 3 internal VPN</code> + <code>\\Prod-ns-2\prodshare\Construction 2027\Dam Construction Engineer Plans.zip</code> (T1083)</td></tr>
+              <tr><td><code>07:34:02</code></td><td>RecentDocs .zip + $MFT + Pictures\a</td><td>Staging — <code>a.zip</code> created, <code>a (2).lnk</code> — BagMRU + RecentDocs MRUListEx</td></tr>
+              <tr><td><code>03:41:56</code></td><td>Sysmon EID 1/22/3 (sat-tni)</td><td>Execution — <code>Preventivo24.02.14.exe.exe</code> SHA256 0CB44C… / Dropbox 162.125.81.15 / dummy www.example.com 93.184.216.34 (T1204/T1036)</td></tr>
+            </tbody>
+          </table>
+          <p class="lede" style="margin-top:12px">All timestamps UTC-normalized via Plaso/mactime before correlation. Full chain of custody on request.</p>
+        </section>
+        <section class="section" style="padding-block:32px">
+          <h2>IOCs & Evidence</h2>
+          <pre class="ioc-block"><code>File: 1.zip | everything.exe | Preventivo24.02.14.exe.exe (SHA256 0CB44C4F8273750FA40497FCA81E850F73927E70B13C8F80CDCFEE9D1478E6F3)
 C2: 162.125.81.15:443 (Dropbox) · 93.184.216.34:80 (www.example.com dummy)
-Host: PROD-WORKSTATIO · SID S-1-5-21-568863175-1002 (steve)
+Host: PROD-WORKSTATIO · SID S-1-5-21-568863175-1002 (steve) · KAPE RegistryHivesUser 07:53:01 UTC
 Registry: NTUSER.DAT RecentDocs / UsrClass.dat BagMRU / BagMRU LastWrite 07:31:05 UTC
 E01 + AFF4 + memdump.lime + EVTX — SHA256 9f4c…3a1e ✓ VERIFIED</code></pre>
-    </section>
+        </section>
+      </>
+    ) : (
+      <>
+        <section class="section" style="padding-block:32px">
+          <h2>Timeline — Audit Phases</h2>
+          <table class="report-table" style="margin-top:16px">
+            <thead><tr><th>Phase</th><th>Activity</th><th>Artefact</th></tr></thead>
+            <tbody>
+              <tr><td>Recon</td><td>Precompile semantics (0x80F/0x801/0x811) + 4-gate pipeline</td><td>MonetrixAccountant.sol L138-172</td></tr>
+              <tr><td>Invariant</td><td>Halmos symbolic + Foundry 120 runs</td><td>test/c4/C4Submission.t.sol</td></tr>
+              <tr><td>PoC</td><td>5-phase exploit — $500k phantom on $1.5M backing</td><td>forge test -vvv</td></tr>
+              <tr><td>Fix</td><td>Single 0x80F + HLP separate</td><td>{c.outcomeMetric}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="section" style="padding-block:32px">
+          <h2>Impact & Proof</h2>
+          <pre class="ioc-block"><code>Finding: H-01 Incorrect Calculation (CWE-682) — double-count L1 backing
+PoC: forge test --match-path test/c4/C4Submission.t.sol -vvv — 5-phase surplus extraction
+Fix: _readL1Backing: 0x80F only + 0x80E HLP separate — removes phantom $500k</code></pre>
+        </section>
+      </>
+    )}
 
     <section class="section" style="padding-block:32px">
       <h2>Artifacts & Reproducibility</h2>

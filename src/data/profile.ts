@@ -56,13 +56,13 @@ export const profile = {
   tagline:
     'I defend networks the way they deserve to be defended: every incident reconstructed from raw telemetry, every detection built from first principles before a single vendor tool gets trusted.',
   location: 'Jakarta, ID · UTC+7',
-  email: 'you@example.com',
+  email: '0x013h@gmail.com',
   cvUrl: '/cv.pdf',
   socials: [
     { platform: 'github', url: 'https://github.com/pepbritisnasetiawan', label: 'GitHub' },
-    { platform: 'linkedin', url: 'https://linkedin.com/in/yourhandle', label: 'LinkedIn' },
+    { platform: 'linkedin', url: 'https://www.linkedin.com/in/pepbri-tisna-setiawan/', label: 'LinkedIn' },
     { platform: 'x', url: 'https://x.com/yourhandle', label: 'X / Twitter' },
-    { platform: 'email', url: 'mailto:you@example.com', label: 'Email' },
+    { platform: 'email', url: 'mailto:0x013h@gmail.com', label: 'Email' },
   ] as Social[],
   stats: [
     { value: 120, suffix: '+', label: 'Incidents investigated' },
