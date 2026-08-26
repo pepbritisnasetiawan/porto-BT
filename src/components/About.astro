@@ -3,14 +3,17 @@ import { profile, timeline, skillMatrix } from '../data/profile';
 ---
 
 <section class="section container" id="about">
-  <header class="section-head reveal">
-    <p class="kicker">About</p>
-    <h2>Blue teamer who reads the raw bytes</h2>
-    <p class="lede">
-      I started on the SOC floor and moved toward the evidence: memory images, disk
-      artifacts and disassembly. My rule is static-before-dynamic, telemetry-before-testimony,
-      and every finding must survive a hostile defense counsel — or a hostile peer review.
-    </p>
+  <header class="section-head reveal" style="display:grid; grid-template-columns: 88px 1fr; gap:18px; align-items:start">
+    <img src={`${import.meta.env.BASE_URL}avatar.jpeg`} alt="0x013H — Pep Britis" width="88" height="88" style="width:88px;height:88px;border-radius:16px; border:1px solid var(--rule); object-fit:cover; background:var(--bg-surface)" loading="lazy" decoding="async" />
+    <div>
+      <p class="kicker">About — 0x013H · Pep Britis</p>
+      <h2>Blue teamer who reads the raw bytes</h2>
+      <p class="lede">
+        I started on the SOC floor and moved toward the evidence: memory images, disk
+        artifacts and disassembly. My rule is static-before-dynamic, telemetry-before-testimony,
+        and every finding must survive a hostile defense counsel — or a hostile peer review.
+      </p>
+    </div>
   </header>
 
   <div class="about__grid">

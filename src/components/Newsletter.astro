@@ -1,0 +1,26 @@
+---
+---
+
+<section class="section container" id="newsletter">
+  <div class="newsletter-card reveal">
+    <div>
+      <p class="kicker">Newsletter — zero spam, zero tracker</p>
+      <h2>Get the next case file first</h2>
+      <p class="lede">One email per new DFIR report — IOCs, timeline, and repro steps. No newsletter, no tracking, unsubscribe in one click. Powered by Buttondown (free tier).</p>
+    </div>
+    <form class="newsletter-form" action="https://buttondown.email/api/emails/embed-subscribe/0x013H" method="post" target="_blank">
+      <input type="email" name="email" required placeholder="you@company.com" aria-label="Email address" />
+      <button type="submit" class="btn btn--primary">Subscribe →</button>
+    </form>
+    <p class="meta-label" style="margin-top:10px; margin-bottom:0">
+      Or RSS: <a href={`${import.meta.env.BASE_URL}rss.xml`}>/rss.xml</a> · 28 cases · Plausible on <code>pepbritisnasetiawan.github.io</code>
+    </p>
+  </div>
+</section>
+
+<style>
+  .newsletter-card { display:grid; gap:16px; border:1px solid var(--rule); border-top:3px double var(--rule); border-radius:14px; padding:24px; background:var(--bg); background-image: radial-gradient(var(--paper-rule) 1px, transparent 1px); background-size:16px 16px; }
+  .newsletter-form { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .newsletter-form input { flex:1; min-width:220px; font-family:var(--font-mono); font-size:14px; padding:10px 12px; border:1px solid var(--rule-soft); border-radius:8px; background:var(--bg-surface); color:var(--ink); }
+  .newsletter-form input:focus { outline:2px solid var(--blueprint); border-color:var(--blueprint); }
+</style>

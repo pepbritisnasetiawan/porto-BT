@@ -7,15 +7,19 @@ import { profile } from '../data/profile';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = `${profile.name} — ${profile.roleLine}`,
   description = profile.tagline,
+  ogImage: ogImageProp,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const ogImage = new URL(`${import.meta.env.BASE_URL}og-image.svg`, Astro.site).toString();
+const ogImage = ogImageProp
+  ? new URL(ogImageProp, Astro.site).toString()
+  : new URL(`${import.meta.env.BASE_URL}og-image.svg`, Astro.site).toString();
 const github = profile.socials.find((s) => s.platform === 'github')?.url;
 ---
 
@@ -28,6 +32,7 @@ const github = profile.socials.find((s) => s.platform === 'github')?.url;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="RSS — 0x013H DFIR Cases" href={`${import.meta.env.BASE_URL}rss.xml`} />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

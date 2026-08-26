@@ -58,10 +58,11 @@ export const profile = {
   location: 'Jakarta, ID · UTC+7',
   email: '0x013h@gmail.com',
   cvUrl: '/cv.pdf',
+  avatar: '/avatar.jpeg',
   socials: [
     { platform: 'github', url: 'https://github.com/pepbritisnasetiawan', label: 'GitHub' },
     { platform: 'linkedin', url: 'https://www.linkedin.com/in/pepbri-tisna-setiawan/', label: 'LinkedIn' },
-    { platform: 'x', url: 'https://x.com/0x013H', label: 'X / Twitter' },
+    { platform: 'x', url: 'https://x.com/febrian_tisna', label: 'X / Twitter' },
     { platform: 'email', url: 'mailto:0x013h@gmail.com', label: 'Email' },
   ] as Social[],
   stats: [

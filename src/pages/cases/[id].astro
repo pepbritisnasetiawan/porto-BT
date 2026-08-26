@@ -16,7 +16,7 @@ const description = c.summary.slice(0, 155);
 const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} ogImage={`${import.meta.env.BASE_URL}og/${c.id}.svg`}>
   <article class="container case-detail">
     <a href={`${import.meta.env.BASE_URL}#cases`} class="kicker" style="display:inline-block;margin-bottom:18px">← Back to Case Files</a>
 
