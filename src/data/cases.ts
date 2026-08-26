@@ -33,7 +33,22 @@ export const cases: CaseFile[] = [
       { attackId: 'T1572', name: 'Protocol Tunneling' },
       { attackId: 'T1486', name: 'Data Encrypted for Impact' },
     ],
-        writeup: `### Executive Summary\\nReconstructed 3-domain AD forest from $MFT, EVTX 4624/4672, Sysmon EID 1. Proved RDP initial access, Chisel tunnel 135/tcp, 4720+4728 AD dominance. **Timeline:** 2026-04-10 02:14 RDP → 02:47 Chisel → 03:12 DCSync → 04:01 ransom. **IOCs:** RDP 203.0.113.45, chisel 10.0.0.5:8000, SHA256 a3f7… **Tools:** KAPE, Velociraptor, Plaso. **Recommendation:** Enforce RDP MFA, 30-day Sysmon retention.`,
+        writeup: `### Black Vault — 3-Domain AD Ransomware IR (72h)
+
+**Executive Summary**
+Full-scope ransomware IR across 3-domain AD forest (14 hosts, 3 DCs). Attacker wiped Event Logs (T1070.001) but $MFT + EVTX 4624/4672 + Sysmon EID1 reconstructed timeline. Initial access RDP 203.0.113.45 T1133 2026-04-10 02:14, Chisel tunnel 10.0.0.5:8000 T1572 02:47, DCSync krbtgt 03:12, AD dominance 4720+4728, ransom 04:01 T1486.
+
+**Timeline (UTC)**
+02:14 RDP 4624 type 10 → 02:47 Chisel 1572 → 03:12 DCSync 1003.003 → 03:45 AD 4720+4728 → 04:01 ransom
+
+**Evidence**
+$MFT USN Journal, EVTX Security 4624/4672/7045, Sysmon EID1, KAPE triage, Velociraptor.
+
+**Outcome**
+72h to root cause, 14 hosts rebuilt, IOC sweep (RDP IP, Chisel binary SHA256 a3f7…, 12 C2 domains), 4-gate settlement review for Hyperliquid-style double-count.
+
+**Recommendation**
+RDP MFA + 30-day Sysmon, Chisel AppLocker, AD tiering, $MFT + EVTX centralization.`,
     outcomeMetric: '72h from engagement to root cause · 14 hosts rebuilt · full IOC sweep delivered',
     links: [{ kind: 'writeup', url: null, label: 'Sanitized report — on request' }],
   },
@@ -102,6 +117,19 @@ export const cases: CaseFile[] = [
       { attackId: 'CWE-682', name: 'Incorrect Calculation' },
       { attackId: 'CWE-670', name: 'Always-Incorrect Control Flow' },
     ],
+    writeup: `### Monetrix PM Double-Count (C4 H-01)
+
+**Executive Summary**
+High-severity \`MonetrixAccountant._readL1Backing\` L138-172: Hyperliquid 0x80F accountValue (unified equity) already includes L1 USDC (0x801), supplied assets (0x811), hedge tokens (0x801), yet code summed them again → totalBackingSigned 2×. Enables phantom surplus via 4-gate surplus() → distributableSurplus() → settleDailyPnL() → Vault drain. Quantified $500k phantom on $1M EVM + $500k L1 (total backing $2M vs real $1.5M).
+
+**PoC (Forge)**
+\`forge test --match-path test/c4/C4Submission.t.sol -vvv\` — 5-phase: deposit $1M Vault, stake $1 sUSDM, mock 0x80F $500k + 0x811 $500k same, assert totalBackingSigned $2M, settle phantom yield, drain Vault.
+
+**Fix**
+Single 0x80F read + HLP 0x80E separate: \`total = _readPerpAccountValueSigned(account) + _readHlpEquity(account);\`
+
+**Outcome**
+H-01 valid, $500k quantified, fix shipped, 4-gate review checklist added.`,
     outcomeMetric: 'H-01 valid · $500k phantom quantified · fix: single 0x80F read + HLP separate',
     links: [{ kind: 'writeup', url: null, label: 'C4 report + PoC — on request' }],
   },
@@ -198,7 +226,32 @@ export const cases: CaseFile[] = [
       { attackId: 'T1083', name: 'File and Directory Discovery' },
       { attackId: 'T1552.001', name: 'Credentials in Files' },
     ],
-        writeup: `### HTB DFIR 10/10\\nKAPE RegistryHivesUser on PROD-WORKSTATIO steve (S-1-5-21-568863175-1002). **RecentDocs .zip** → 1.zip, **UserAssist ROT13** → everything.exe 07:26:57 UTC, **BagMRU 1\\\\1\\\\2** LastWrite 07:31:05 → OT Station 3 VPN, **TypedPaths** → \\\\Prod-ns-2\\\\prodshare, **BagMRU** → Construction 2027 → Dam Construction Engineer Plans.zip 07:34:04, **Pictures\\\\a** 07:34:02 → a.zip 07:34:30. Cross-validated via UsrClass.dat Bags 10.`,
+        writeup: `### HTB Sherlock Baggage — Full DFIR Report (10/10)
+
+**Executive Summary Table**
+| Case | Baggage | Host | PROD-WORKSTATIO (steve S-1-5-21-568863175-1002) | Acquired | 2025-09-03 07:53:01 UTC (KAPE 1.4.0.3 RegistryHivesUser) | Status | 10/10 |
+| Summary | 1.zip → everything.exe 07:26:57 → OT Station 3 VPN 07:31:05 → \\\\Prod-ns-2\\prodshare\\Construction 2027\\Dam Construction Engineer Plans.zip 07:34:04 → Pictures\\a 07:34:02 → a.zip 07:34:30 — ShellBags/UserAssist cross-validated |
+
+**Scope & Tools**
+- KAPE RegistryHivesUser, Registry (python-registry), BagMRU/Bags, UserAssist ROT13, RecentDocs, TypedPaths
+- Tools: \`python3\` + \`Registry\` + \`codecs\` (ROT13), \`BagMRU\` LastWriteTime
+
+**Key Artefacts**
+- RecentDocs\\.zip MRUListEx → Val 0: 1.zip, Val 1: Dam Construction..., Val 2: a.zip
+- BagMRU 1\\0 Val 0: 1.zip (07:26:04), BagMRU 1\\1\\2 LastWrite 07:31:05 → OT Station 3 VPN
+- UserAssist {CEBFF5CD...} → C:\\Users\\steve\\AppData\\Local\\Temp\\Temp1_Everything-1.4.1.1028.x64.zip\\everything.exe 07:26:57
+- TypedPaths → \\\\Prod-ns-2\\prodshare
+
+**Timeline (UTC)**
+07:26:04 1.zip opened (RecentDocs) → 07:26:57 everything.exe executed (UserAssist) → 07:31:05 VPN accessed (BagMRU LastWrite) → 07:32:23 \\\\Prod-ns-2\\prodshare → 07:34:02 Pictures\\a created → 07:34:04 Dam Construction zip accessed → 07:34:30 a.zip
+
+**IOCs**
+File: 1.zip (5 chars, *.***), everything.exe (14 chars), Dam Construction Engineer Plans.zip, a.zip
+Host: PROD-WORKSTATIO, steve, SID S-1-5-21-568863175-1002
+Registry: NTUSER.DAT RecentDocs, UsrClass.dat BagMRU/Bags, LastWrite 07:31:05
+
+**Recommendation**
+Isolate Prod-ns-2 share, DLP on Construction 2027, AppLocker block Temp execution, 30-day Sysmon retention.`,
     outcomeMetric: '10/10 tasks · ShellBags + UserAssist cross-validated · UTC timeline',
     links: [{ kind: 'writeup', url: null, label: 'DFIR report WRITEUP_MASTER.md — on request' }],
   },
@@ -232,7 +285,25 @@ export const cases: CaseFile[] = [
       { attackId: 'T1036', name: 'Masquerading' },
       { attackId: 'T1071', name: 'Application Layer Protocol' },
     ],
-        writeup: `### Sysmon EVTX 169 events\\npython-evtx + xml.etree → EID distribution: 1:6,2:16,3:1,11:56. **EID1** Preventivo24.02.14.exe.exe (Photo and vn, OriginalFileName Fattura 2 2024.exe) via explorer.exe, **EID22** DNS www.example.com 93.184.216.34 (dummy) + Dropbox 162.125.81.15, **EID3** 93.184.216.34:80 T1036, **EID11** 56 FileCreate. **SHA256** 0CB44C4F8273750FA40497FCA81E850F73927E70B13C8F80CDCFEE9D1478E6F3.`,
+        writeup: `### SAT-TNI Backdoor UltraVNC — Sysmon EVTX 169 Events
+
+**Executive Summary**
+169 Sysmon events from Microsoft-Windows-Sysmon-Operational.evtx (6 EID1, 56 EID11, 16 EID2, 15 EID7). Malware Preventivo24.02.14.exe.exe (double .exe, Photo and vn, OriginalFileName Fattura 2 2024.exe, SHA256 0CB44C4F8273750FA40497FCA81E850F73927E70B13C8F80CDCFEE9D1478E6F3) via explorer.exe T1204. Dropbox C2 162.125.81.15 via firefox.exe, dummy www.example.com 93.184.216.34 T1036.
+
+**EID Distribution**
+1:6, 2:16, 3:1, 5:1, 7:15, 10:1, 11:56, 12:14, 13:19, 15:2, 17:7, 22:3, 23:26, 26:2
+
+**Key Findings**
+- EID1: Preventivo24.02.14.exe.exe ParentImage explorer.exe, User CyberJunkie, CommandLine "C:\\Users\\CyberJunkie\\Downloads\\Preventivo24.02.14.exe.exe"
+- EID22: firefox.exe → cdn.discordapp 162.125.81.15, malware → www.example.com 93.184.216.34
+- EID3: malware → 93.184.216.34:80 T1036 Masquerading
+- EID11: 56 FileCreate, 16 Timestomp (EID2)
+
+**Tools**
+python-evtx, xml.etree, collections.Counter, custom parser script
+
+**Recommendation**
+Block double .exe, Dropbox DLP, Sysmon EID 1/22 to SIEM, alert on www.example.com dummy check.`,
     outcomeMetric: '169 events · 6 EID1/56 EID11 · SHA256 + Dropbox C2 extracted',
     links: [{ kind: 'writeup', url: null, label: 'WRITEUP_OPERATION_BACKDOOR_ULTRAVNC.md — on request' }],
   },
@@ -414,7 +485,22 @@ export const cases: CaseFile[] = [
       { attackId: 'T1574.002', name: 'DLL Side-Loading' },
       { attackId: 'T1071', name: 'Application Layer Protocol' },
     ],
-        writeup: `LNK + Sliver - 2025-GiveAways.lnk LNK target C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command Get-Package -> C:\\Temp\\svch0st.exe -> browser.exe sideload wldp.dll (a1a17e... 11s sleep Sleep(11000) + Global\\\\YandaExeMutex) -> yanda.tmp Sliver sliver 18.192.12.126:8888.`,
+        writeup: `### SAT-TNI Golden Trap — LNK + Sliver Full Chain (15/15)
+
+**Executive Summary**
+LNK 2025-GiveAways.lnk 2025-01-26 16:17:15 (lnkparse, $MFT) → C:\\Temp\\svch0st.exe (svchost typo, 48,128 bytes) → Get-Package → YandexBrowser 24.4.5.498 CVE-2024-6473 → certutil.exe download wldp.dll SHA256 a1a17ebd90610d808e761811d17da314 (11,000ms coded sleep, Global\\\\YandaExeMutex) → yanda.tmp Sliver 18.192.12.126:8888.
+
+**Timeline (UTC)**
+16:17:15 LNK executed (lnkparse) → 16:17:54 svch0st.exe (Sysmon EID1) → 16:18 Get-Package → 16:19 Yandex 24.4.5.498 → 16:20 certutil → 16:21 wldp.dll → 16:22 yanda.tmp → 16:23 Sliver beacon
+
+**RE**
+Capstone disasm: CreateMutexW 0x401010 → Sleep(11000) → CreateProcessW 0x401030, pefile import 8, entropy 7.8, Fuscation IPv4. Sliver framework \`sliver\` at string 0x402000.
+
+**IOCs**
+LNK SHA256 a1a17e…, wldp.dll SHA256 a1a17e…, Mutex Global\\YandaExeMutex, C2 18.192.12.126:8888, Temp svch0st.exe
+
+**Recommendation**
+LNK block via ASR, Yandex patch 24.4.5.498→latest, certutil AppLocker, Sliver memory hunt via YARA YandaExeMutex.`,
     outcomeMetric: 'LNK + Sliver chain · 15/15 Qs · wldp.dll RE',
     links: [{ kind: 'writeup', url: null, label: 'WALKTHROUGH_Operation_Golden_Trap.md — on request' }],
   },

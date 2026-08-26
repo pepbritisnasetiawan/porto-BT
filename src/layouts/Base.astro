@@ -85,6 +85,21 @@ const github = profile.socials.find((s) => s.platform === 'github')?.url;
             author: { '@id': `${canonical}#person` },
             publisher: { '@id': `${canonical}#person` },
           },
+          {
+            '@type': 'JobPosting',
+            title: 'Security Engineer · DFIR · Blue Team — Available for hire',
+            description: profile.tagline,
+            hiringOrganization: {
+              '@type': 'Organization',
+              name: '0x013H',
+              sameAs: profile.socials.find((s) => s.platform === 'github')?.url,
+            },
+            jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: profile.location } },
+            applicantLocationRequirements: { '@type': 'Country', name: 'Remote' },
+            employmentType: ['FULL_TIME', 'CONTRACTOR'],
+            url: canonical,
+            validThrough: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+          },
         ],
       })}
     />
