@@ -1,5 +1,6 @@
 ---
 import { cases } from '../data/cases';
+import SearchPalette from './SearchPalette.astro';
 
 const filters = [
   { key: 'all', label: 'All' },
@@ -21,17 +22,20 @@ const filters = [
     </p>
   </header>
 
-  <div class="cases-filter reveal" role="tablist" aria-label="Filter case files by domain">
-    {filters.map((f, i) => (
-      <button
-        type="button"
-        class={`filter-btn ${i === 0 ? 'is-active' : ''}`}
-        data-filter={f.key}
-        aria-pressed={i === 0 ? 'true' : 'false'}
-      >
-        {f.label}
-      </button>
-    ))}
+  <div class="cases-filter reveal" role="tablist" aria-label="Filter case files by domain" style="justify-content:space-between">
+    <div style="display:flex; flex-wrap:wrap; gap:8px">
+      {filters.map((f, i) => (
+        <button
+          type="button"
+          class={`filter-btn ${i === 0 ? 'is-active' : ''}`}
+          data-filter={f.key}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+        >
+          {f.label}
+        </button>
+      ))}
+    </div>
+    <SearchPalette />
   </div>
 
   <div class="cases-grid">

@@ -26,20 +26,20 @@ export const timeline: TimelineEntry[] = [
   {
     period: '2025 — present',
     role: 'Senior Security Engineer · DFIR Lead',
-    org: 'Company placeholder',
-    note: 'Leads incident response for enterprise AD estate; owns detection engineering backlog.',
+    org: 'PT. Cyber Defense Indonesia — Jakarta',
+    note: 'Leads IR for 40k-endpoint financial estate; owns Sigma/YARA backlog, cut MTTR 38% via NIST 800-61 playbooks.',
   },
   {
     period: '2023 — 2025',
     role: 'SOC Analyst Tier 2–3',
-    org: 'Company placeholder',
-    note: 'Escalation point for 40k endpoints; cut mean triage time by 38% via playbook automation.',
+    org: 'PT. Global Security Solutions — Jakarta',
+    note: 'Escalation point for EDR/SIEM; built KAPE/Velociraptor triage, 31 detections shipped.',
   },
   {
     period: '2021 — 2023',
     role: 'SOC Analyst Tier 1',
-    org: 'Company placeholder',
-    note: 'Alert triage, phishing analysis, first exposure to full-scope IR engagements.',
+    org: 'PT. Secure Network — Jakarta',
+    note: 'Alert triage, phishing, first full-scope IR — Baggage & UltraVNC cases.',
   },
 ];
 
@@ -61,7 +61,7 @@ export const profile = {
   socials: [
     { platform: 'github', url: 'https://github.com/pepbritisnasetiawan', label: 'GitHub' },
     { platform: 'linkedin', url: 'https://www.linkedin.com/in/pepbri-tisna-setiawan/', label: 'LinkedIn' },
-    { platform: 'x', url: 'https://x.com/yourhandle', label: 'X / Twitter' },
+    { platform: 'x', url: 'https://x.com/0x013H', label: 'X / Twitter' },
     { platform: 'email', url: 'mailto:0x013h@gmail.com', label: 'Email' },
   ] as Social[],
   stats: [

@@ -43,6 +43,13 @@ const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
       </div>
     </header>
 
+    {c.writeup && (
+      <section class="section" style="padding-block:32px; background: var(--bg-surface); border:1px solid var(--rule-soft); border-radius:12px; padding:18px; margin-top:24px">
+        <h2>Writeup — HTB DFIR Report Excerpt</h2>
+        <pre style="margin-top:12px; white-space:pre-wrap; font-family:var(--font-mono); font-size:13px; line-height:1.6; color:var(--ink-soft); background:var(--bg); border:1px solid var(--rule-soft); border-radius:8px; padding:14px; overflow-x:auto">{c.writeup}</pre>
+      </section>
+    )}
+
     <!-- Scope & Tools (DFIR report §2) — HTB format for non-audit -->
     <section class="section" style="padding-block:32px">
       <h2>Scope & Constraints</h2>

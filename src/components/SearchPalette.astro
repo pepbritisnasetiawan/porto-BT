@@ -1,0 +1,132 @@
+---
+import { cases } from '../data/cases';
+---
+
+<button class="search-trigger" id="searchTrigger" aria-label="Search cases (Ctrl+K)">
+  <span>⌘K</span> Search cases
+</button>
+
+<div class="palette-overlay" id="palette" aria-hidden="true">
+  <div class="palette-backdrop" id="paletteBackdrop"></div>
+  <div class="palette-panel" role="dialog" aria-modal="true" aria-label="Search cases">
+    <div class="palette-search">
+      <span>🔍</span>
+      <input id="paletteInput" type="search" placeholder="Search codename, ATT&CK, SHA256, host…" autocomplete="off" />
+      <button id="paletteClose" aria-label="Close">ESC</button>
+    </div>
+    <ul class="palette-results" id="paletteResults" role="listbox"></ul>
+    <div class="palette-foot">
+      <span><kbd>↑↓</kbd> navigate <kbd>Enter</kbd> open <kbd>ESC</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-trigger { font-family:var(--font-mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; padding:8px 12px; border:1px solid var(--rule-soft); background:var(--bg-surface); color:var(--ink-mute); border-radius:8px; cursor:pointer; }
+  .search-trigger:hover { border-color:var(--blueprint); color:var(--blueprint); }
+  .palette-overlay { position:fixed; inset:0; z-index:100; display:none; }
+  .palette-overlay.open { display:flex; align-items:flex-start; justify-content:center; padding:80px 16px 16px; }
+  .palette-backdrop { position:absolute; inset:0; background:var(--overlay-bg, rgba(0,0,0,0.5)); backdrop-filter: blur(2px); }
+  .palette-panel { position:relative; width:100%; max-width:640px; background:var(--bg); border:1px solid var(--rule); border-radius:14px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.2); max-height:70vh; display:flex; flex-direction:column; }
+  .palette-search { display:flex; align-items:center; gap:10px; padding:12px 14px; border-bottom:1px solid var(--rule-soft); }
+  .palette-search input { flex:1; border:none; outline:none; font-family:var(--font-mono); font-size:14px; background:transparent; color:var(--ink); }
+  .palette-search button { font-family:var(--font-mono); font-size:11px; border:1px solid var(--rule-soft); background:var(--bg-surface); padding:4px 8px; border-radius:6px; cursor:pointer; }
+  .palette-results { list-style:none; margin:0; padding:0; overflow-y:auto; max-height:50vh; }
+  .palette-item { display:flex; flex-direction:column; gap:2px; padding:10px 14px; cursor:pointer; border-left:3px solid transparent; }
+  .palette-item:hover, .palette-item.active { background:var(--blueprint-tint); border-left-color:var(--blueprint); }
+  .palette-item strong { font-size:13px; color:var(--ink); }
+  .palette-item span { font-size:11px; color:var(--ink-mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .palette-foot { padding:8px 14px; border-top:1px solid var(--rule-soft); font-family:var(--font-mono); font-size:11px; color:var(--ink-mute); display:flex; gap:12px; }
+  .palette-foot kbd { border:1px solid var(--rule-soft); padding:1px 4px; border-radius:4px; background:var(--bg-surface); }
+</style>
+
+<script>
+  const cases = JSON.parse(document.getElementById('cases-data')?.textContent || '[]');
+  const trigger = document.getElementById('searchTrigger');
+  const overlay = document.getElementById('palette');
+  const input = document.getElementById('paletteInput');
+  const results = document.getElementById('paletteResults');
+  const closeBtn = document.getElementById('paletteClose');
+  const backdrop = document.getElementById('paletteBackdrop');
+  let activeIdx = 0;
+  let filtered = [];
+
+  // Fallback: if cases-data not found, scrape from DOM
+  const scrapeCases = () => {
+    return Array.from(document.querySelectorAll('.case')).map(el => {
+      const id = el.id.replace('case-','');
+      const codename = el.querySelector('.pill--accent')?.textContent || id;
+      const summary = el.querySelector('.case__summary')?.textContent || '';
+      const techs = Array.from(el.querySelectorAll('.pill[title]')).map(p => p.textContent).join(' ');
+      return { id, codename, summary, techs };
+    });
+  };
+
+  function getCases() {
+    if (cases.length) return cases;
+    return scrapeCases();
+  }
+
+  function render(list) {
+    results.innerHTML = '';
+    if (!list.length) {
+      results.innerHTML = '<li class="palette-item"><span>No matches — try SHA256, ATT&CK, host</span></li>';
+      return;
+    }
+    list.forEach((c, i) => {
+      const li = document.createElement('li');
+      li.className = 'palette-item' + (i===activeIdx ? ' active' : '');
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', String(i===activeIdx));
+      li.innerHTML = `<strong>${c.codename}</strong><span>${c.summary.slice(0,120)} · ${c.techs || ''}</span>`;
+      li.addEventListener('click', () => openCase(c.id));
+      results.appendChild(li);
+    });
+  }
+
+  function filter(q) {
+    const all = getCases();
+    if (!q) return all.slice(0,8);
+    const qq = q.toLowerCase();
+    return all.filter(c => (`${c.codename} ${c.summary} ${c.techs} ${c.id}`.toLowerCase().includes(qq))).slice(0,8);
+  }
+
+  function openCase(id) {
+    const base = import.meta.env.BASE_URL || '/';
+    location.href = `${base}cases/${id}/`;
+  }
+
+  function openPalette() {
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden','false');
+    input.focus();
+    filtered = filter('');
+    activeIdx = 0;
+    render(filtered);
+    document.body.style.overflow = 'hidden';
+  }
+  function closePalette() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  trigger?.addEventListener('click', openPalette);
+  closeBtn?.addEventListener('click', closePalette);
+  backdrop?.addEventListener('click', closePalette);
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); overlay.classList.contains('open') ? closePalette() : openPalette(); }
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape') closePalette();
+    if (e.key === 'ArrowDown') { activeIdx = (activeIdx+1)%filtered.length; render(filtered); e.preventDefault(); }
+    if (e.key === 'ArrowUp') { activeIdx = (activeIdx-1+filtered.length)%filtered.length; render(filtered); e.preventDefault(); }
+    if (e.key === 'Enter') { const c = filtered[activeIdx]; if (c) openCase(c.id); }
+  });
+  input?.addEventListener('input', () => {
+    filtered = filter(input.value);
+    activeIdx = 0;
+    render(filtered);
+  });
+</script>
+
+<script id="cases-data" type="application/json" set:html={JSON.stringify(cases.map(c => ({ id: c.id, codename: c.codename, summary: c.summary, techs: c.techniques.map(t=>t.attackId).join(' ') })))}></script>
