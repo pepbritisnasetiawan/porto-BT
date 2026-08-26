@@ -83,21 +83,21 @@
   --accent-tint: var(--blueprint-tint);
 }
 :root[data-theme="light"] {
-  --bg: #030a06;
-  --bg-surface: #0a1a12;
-  --bg-surface-hover: #0f2318;
-  --ink: #c8f0c8;
-  --ink-soft: #7abf7a;
-  --ink-mute: #4a6a4a;
-  --rule: #1a3a1e;
-  --rule-soft: rgba(120, 255, 120, 0.14);
-  --paper-rule: rgba(120, 255, 120, 0.06);
-  --blueprint: #a8ff60;
-  --blueprint-tint: rgba(168, 255, 96, 0.08);
-  --blueprint-tint-strong: rgba(168, 255, 96, 0.18);
-  --evidence: #ff3b30;
-  --evidence-tint: rgba(255, 59, 48, 0.08);
-  --code-bg: #020a02;
+  --bg: #e8f5e0;
+  --bg-surface: #d4ecd0;
+  --bg-surface-hover: #c8e4c0;
+  --ink: #0a1a0a;
+  --ink-soft: #1e3a1e;
+  --ink-mute: #4a6a3a;
+  --rule: #0a1a0a;
+  --rule-soft: rgba(10, 26, 10, 0.14);
+  --paper-rule: rgba(10, 26, 10, 0.06);
+  --blueprint: #1a5a1a;
+  --blueprint-tint: rgba(26, 90, 26, 0.08);
+  --blueprint-tint-strong: rgba(26, 90, 26, 0.18);
+  --evidence: #c0382b;
+  --evidence-tint: rgba(192, 56, 43, 0.08);
+  --code-bg: #0a1a0a;
   --code-ink: #a8ff60;
   --surface: var(--bg-surface);
   --muted: var(--ink-mute);
@@ -135,6 +135,7 @@ body {
   hyphens: auto;
   -webkit-hyphens: auto;
   text-shadow: 0 0 6px rgba(168, 255, 96, 0.08);
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .container {

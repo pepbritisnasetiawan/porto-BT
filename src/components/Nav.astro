@@ -79,14 +79,18 @@ const links = [
 
 <script>
   const btn = document.getElementById('themeToggle');
+  const icon = btn?.querySelector('.theme-icon');
   const root = document.documentElement;
   const stored = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   let theme = stored || (prefersDark ? 'dark' : 'light');
   function apply(t) {
     root.setAttribute('data-theme', t);
-    // sync CSS vars via attribute selector (handled in global.css)
+    if (icon) icon.textContent = t === 'dark' ? '◐' : '◑';
   }
+  // honor early script if already set
+  const early = root.getAttribute('data-theme');
+  if (early) theme = early;
   apply(theme);
   btn?.addEventListener('click', () => {
     theme = theme === 'dark' ? 'light' : 'dark';
