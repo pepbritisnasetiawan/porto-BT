@@ -14,6 +14,37 @@ if (!c) throw new Error(`Case ${id} not found`);
 const title = `${c.codename} — Case File ${c.id}`;
 const description = c.summary.slice(0, 155);
 const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
+
+function renderWriteup(md: string) {
+  // Minimal MD → HTML for HTB DFIR reports: headings, bold, code, lists, paragraphs
+  let html = md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // code `...`
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // bold **...**
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // headings ### ...
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  // unordered list - lines starting with - or *
+  html = html.replace(/^\s*[-*] (.+)$/gm, '<li>$1</li>');
+  // wrap loose lines into paragraphs (split by double newline)
+  html = html
+    .split(/\n{2,}/)
+    .map((block) => {
+      const t = block.trim();
+      if (!t) return '';
+      if (t.startsWith('<h') || t.startsWith('<li') || t.startsWith('<ul') || t.startsWith('<table')) return t;
+      if (t.includes('<li>')) return `<ul>${t}</ul>`;
+      return `<p>${t.replace(/\n/g, '<br/>')}</p>`;
+    })
+    .join('\n');
+  // fix nested <li> without ul wrapper already handled
+  return html;
+}
+const writeupHtml = c.writeup ? renderWriteup(c.writeup) : '';
 ---
 
 <Base title={title} description={description} ogImage={`${import.meta.env.BASE_URL}og/${c.id}.svg`}>
@@ -44,9 +75,9 @@ const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
     </header>
 
     {c.writeup && (
-      <section class="section" style="padding-block:32px; background: var(--bg-surface); border:1px solid var(--rule-soft); border-radius:12px; padding:18px; margin-top:24px">
+      <section class="section writeup-section" style="padding-block:32px; background: var(--bg-surface); border:1px solid var(--rule-soft); border-radius:12px; padding:18px; margin-top:24px">
         <h2>Writeup — HTB DFIR Report Excerpt</h2>
-        <pre style="margin-top:12px; white-space:pre-wrap; font-family:var(--font-mono); font-size:13px; line-height:1.6; color:var(--ink-soft); background:var(--bg); border:1px solid var(--rule-soft); border-radius:8px; padding:14px; overflow-x:auto">{c.writeup}</pre>
+        <div class="writeup-content" set:html={writeupHtml}></div>
       </section>
     )}
 
