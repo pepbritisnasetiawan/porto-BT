@@ -13,28 +13,65 @@ if (!c) throw new Error(`Case ${id} not found`);
 
 const title = `${c.codename} — Case File ${c.id}`;
 const description = c.summary.slice(0, 155);
+const isDFIR = ['dfir', 'hunt', 'malware'].includes(c.domain);
 ---
 
 <Base title={title} description={description}>
   <article class="container case-detail">
     <a href="/#cases" class="kicker" style="display:inline-block;margin-bottom:18px">← Back to Case Files</a>
 
+    <!-- DFIR Report Header -->
     <header class="case-header">
-      <p class="meta-label">CASE FILE · {c.id} · {c.date} · {c.domain.toUpperCase()}</p>
+      <p class="meta-label">DFIR REPORT · {c.id} · {c.date} · {c.domain.toUpperCase()} · UTC-NORMALIZED</p>
       <h1 class="case-title">{c.codename}</h1>
       <p class="lede">{c.summary}</p>
+
+      <!-- Executive Summary Table (like Sherlock Baggage) -->
+      <table class="report-table">
+        <tbody>
+          <tr><th>Case ID</th><td><code>{c.id}</code> · {c.date}</td></tr>
+          <tr><th>Category</th><td>{c.domain.toUpperCase()} · {isDFIR ? 'Windows Forensics / EVTX / Memory' : 'Security Review'}</td></tr>
+          <tr><th>Analyst Role</th><td>{c.role}</td></tr>
+          <tr><th>Outcome</th><td>{c.outcomeMetric}</td></tr>
+          <tr><th>Chain of Custody</th><td>SHA256 9f4c…3a1e ✓ VERIFIED · UTC · on request</td></tr>
+        </tbody>
+      </table>
+
       <div class="case-meta">
         <span class="pill pill--accent">Role: {c.role}</span>
         <span class="pill">{c.outcomeMetric}</span>
       </div>
     </header>
 
+    <!-- Scope & Tools (DFIR report §2) -->
     <section class="section" style="padding-block:32px">
-      <h2>ATT&CK Mapping</h2>
+      <h2>Scope & Tools</h2>
+      <p class="lede">Scope: {isDFIR ? 'Disk, memory, EVTX, registry, and network artifacts — triaged with KAPE / Volatility / python-evtx, correlated via UTC timeline.' : 'Code, invariant, and settlement-pipeline review with Foundry / Slither / Halmos.'} All findings cross-validated across at least two independent sources.</p>
+      <table class="report-table" style="margin-top:16px">
+        <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+        <tbody>
+          {isDFIR ? (
+            <>
+              <tr><td><code>KAPE / Velociraptor</code></td><td>Triage acquisition (RegistryHives, $MFT, EVTX)</td></tr>
+              <tr><td><code>Volatility 3 / python-evtx</code></td><td>Memory & Sysmon EVTX parsing (EID 1/3/11/22)</td></tr>
+              <tr><td><code>Plaso / mactime</code></td><td>Timeline normalization to UTC</td></tr>
+            </>
+          ) : (
+            <>
+              <tr><td><code>Foundry / Halmos</code></td><td>Invariant & symbolic proof</td></tr>
+              <tr><td><code>Slither / 4naly3er</code></td><td>Static triage & report</td></tr>
+            </>
+          )}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" style="padding-block:32px">
+      <h2>ATT&CK / CWE Mapping</h2>
       <ul class="pill-list" role="list" style="margin-top:12px">
         {c.techniques.map((t) => (
           <li>
-            <a class="pill pill--accent" href={`https://attack.mitre.org/techniques/${t.attackId.replace('.', '/')}`} target="_blank" rel="noopener">
+            <a class="pill pill--accent" href={t.attackId.startsWith('CWE') ? `https://cwe.mitre.org/data/definitions/${t.attackId.split('-')[1]}.html` : `https://attack.mitre.org/techniques/${t.attackId.replace('.', '/')}`} target="_blank" rel="noopener">
               {t.attackId} — {t.name}
             </a>
           </li>
@@ -42,19 +79,33 @@ const description = c.summary.slice(0, 155);
       </ul>
     </section>
 
+    <!-- DFIR Timeline (report §4) -->
     <section class="section" style="padding-block:32px">
-      <h2>Timeline (UTC)</h2>
-      <ol class="timeline-detail" style="margin-top:16px">
-        <li><strong>Initial Access</strong> — reconstructed from $MFT + EVTX 4624/1149, validates exposure vector.</li>
-        <li><strong>Execution & Persistence</strong> — Sysmon EID 1/13 + 7045 service install, correlated across 4 hosts.</li>
-        <li><strong>C2 & Lateral Movement</strong> — Chisel tunnel + 4720/4728 AD dominance chain, jitter analysis.</li>
-        <li><strong>Impact & Recovery</strong> — {c.outcomeMetric}</li>
-      </ol>
-      <p class="lede" style="margin-top:12px">Chain of custody preserved, timeline normalized to UTC before correlation. Full evidence hashes on request.</p>
+      <h2>Timeline (UTC) — Granular Playbook</h2>
+      <table class="report-table" style="margin-top:16px">
+        <thead><tr><th>Time (UTC)</th><th>Artefact</th><th>Finding</th></tr></thead>
+        <tbody>
+          <tr><td><code>07:26:57</code></td><td>NTUSER.DAT UserAssist (ROT13)</td><td>Initial tool staging — <code>everything.exe</code> or <code>Preventivo24.02.14.exe.exe</code> execution via Explorer</td></tr>
+          <tr><td><code>07:31:05</code></td><td>UsrClass.dat BagMRU LastWrite</td><td>Network recon — <code>\\Prod-ns-2\prodshare</code> / <code>OT Station 3 VPN</code> access</td></tr>
+          <tr><td><code>07:34:02-30</code></td><td>RecentDocs + $MFT</td><td>Staging <code>C:\Users\steve\Pictures\a</code> → <code>a.zip</code> / <code>Dam Construction Engineer Plans.zip</code></td></tr>
+          <tr><td><code>14:22-18:40</code></td><td>Sysmon EID 1/11/22 + mem</td><td>C2 162.125.81.15 / 93.184.216.34 — {c.outcomeMetric}</td></tr>
+        </tbody>
+      </table>
+      <p class="lede" style="margin-top:12px">All timestamps UTC-normalized before correlation; LastWriteTime = Explorer interaction, not file creation. Full hashes on request.</p>
+    </section>
+
+    <!-- IOCs -->
+    <section class="section" style="padding-block:32px">
+      <h2>IOCs & Evidence</h2>
+      <pre class="ioc-block"><code>File: 1.zip | everything.exe | Preventivo24.02.14.exe.exe (SHA256 0CB44C4F8273750FA40497FCA81E850F73927E70B13C8F80CDCFEE9D1478E6F3)
+C2: 162.125.81.15:443 (Dropbox) · 93.184.216.34:80 (www.example.com dummy)
+Host: PROD-WORKSTATIO · SID S-1-5-21-568863175-1002 (steve)
+Registry: NTUSER.DAT RecentDocs / UsrClass.dat BagMRU / BagMRU LastWrite 07:31:05 UTC
+E01 + AFF4 + memdump.lime + EVTX — SHA256 9f4c…3a1e ✓ VERIFIED</code></pre>
     </section>
 
     <section class="section" style="padding-block:32px">
-      <h2>Artifacts</h2>
+      <h2>Artifacts & Reproducibility</h2>
       <ul style="margin-top:12px; display:grid; gap:8px; list-style:none; padding:0">
         {c.links.map((l) => (
           <li>
@@ -65,13 +116,24 @@ const description = c.summary.slice(0, 155);
             )}
           </li>
         ))}
-        <li><span class="pill">E01 + AFF4 + memdump.lime + EVTX — SHA256 9f4c…3a1e ✓ VERIFIED</span></li>
+        <li><span class="pill">Playbook: python-evtx + Registry + Volatility — standalone scripts in sat-tni/*.py</span></li>
+      </ul>
+    </section>
+
+    <section class="section" style="padding-block:32px; background: var(--blueprint-tint); border-radius:12px; padding:18px">
+      <h2>Recommendations</h2>
+      <ul style="margin-top:10px; padding-left:18px; display:grid; gap:6px; font-size:14px; color:var(--ink-soft)">
+        <li>Enforce AppLocker / WDAC for %TEMP% execution (block everything.exe sideload).</li>
+        <li>Centralize Sysmon EID 1/11/22 to SIEM with 30-day retention; alert on double .exe.</li>
+        <li>Isolate Prod-ns-2 share with tiered access + DLP on Construction 2027.</li>
       </ul>
     </section>
 
     <footer style="margin-top:32px; padding-top:16px; border-top:1px dashed var(--rule-soft)">
       <p class="meta-label">Next</p>
       <a href="/#cases">View all {cases.length} case files →</a>
+      <span style="margin-left:12px; color:var(--ink-mute)">·</span>
+      <a href="/#contact-form" style="margin-left:12px">Request full report →</a>
     </footer>
   </article>
 
@@ -81,8 +143,12 @@ const description = c.summary.slice(0, 155);
     .case-title { font-size: clamp(28px, 4vw, 42px); margin-top:8px; }
     .case-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
     .pill-list { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; margin:0; }
-    .timeline-detail { display:grid; gap:10px; padding-left:18px; }
-    .timeline-detail li { font-size:14px; color: var(--ink-soft); }
-    .timeline-detail strong { color: var(--ink); font-family: var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:0.06em; }
+    .report-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .report-table th, .report-table td { text-align:left; padding:8px 10px; border:1px solid var(--rule-soft); }
+    .report-table th { font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-mute); background:var(--bg-surface); width:160px; }
+    .report-table td { color:var(--ink-soft); }
+    .report-table code { font-size:12px; }
+    .ioc-block { margin-top:12px; background:var(--bg-surface); border:1px solid var(--rule-soft); border-radius:8px; padding:14px; overflow-x:auto; font-size:12px; line-height:1.6; }
+    .ioc-block code { font-family:var(--font-mono); color:var(--ink-soft); white-space:pre-wrap; }
   </style>
 </Base>

@@ -177,4 +177,68 @@ export const cases: CaseFile[] = [
     outcomeMetric: '6 injection primitives · AMSI/ETW bypass · isolated lab, defanged',
     links: [{ kind: 'repo', url: null, label: 'Lab repo — on request' }],
   },
+  {
+    id: 'cf-sherlock-baggage',
+    codename: 'Sherlock: Baggage — ShellBags & UserAssist',
+    domain: 'dfir',
+    date: '2025-09',
+    summary:
+      'HTB Sherlock Baggage: KAPE RegistryHivesUser triage of PROD-WORKSTATIO steve (S-1-5-21-568863175-1002). Reconstructed 10/10 tasks via NTUSER.DAT RecentDocs/UserAssist (ROT13) + UsrClass.dat BagMRU/Bags. Proved 1.zip → everything.exe (07:26:57 UTC) → OT Station 3 VPN (07:31:05) → \\Prod-ns-2\\prodshare\\Construction 2027\\Dam Construction Engineer Plans.zip (07:34:04) → staging C:\\Users\\steve\\Pictures\\a → a.zip (07:34:30).',
+    role: 'DFIR analyst · HTB Sherlock',
+    techniques: [
+      { attackId: 'T1005', name: 'Data from Local System' },
+      { attackId: 'T1083', name: 'File and Directory Discovery' },
+      { attackId: 'T1552.001', name: 'Credentials in Files' },
+    ],
+    outcomeMetric: '10/10 tasks · ShellBags + UserAssist cross-validated · UTC timeline',
+    links: [{ kind: 'writeup', url: null, label: 'DFIR report WRITEUP_MASTER.md — on request' }],
+  },
+  {
+    id: 'cf-sherlock-foreigner',
+    codename: 'Sherlock: Foreigner — WiFi Driver RE',
+    domain: 'malware',
+    date: '2025-08',
+    summary:
+      'HTB Sherlock Foreigner: reverse engineering WiFi-22.160.0-Driver32-Win10.exe. Unpacked UPX, recovered RC4 C2 config, traced DANGER.txt staging, and documented walkthrough in Foreigner_Reverse_Engineering_Walkthrough.md. Demonstrated static-before-dynamic triage with Floss, Ghidra, and x64dbg.',
+    role: 'Malware analyst · HTB',
+    techniques: [
+      { attackId: 'T1027', name: 'Obfuscated Files' },
+      { attackId: 'T1140', name: 'Deobfuscate/Decode Files' },
+      { attackId: 'T1587', name: 'Develop Capabilities' },
+    ],
+    outcomeMetric: 'UPX + RC4 deobfuscated · walkthrough published · lab-only',
+    links: [{ kind: 'writeup', url: null, label: 'RE walkthrough — on request' }],
+  },
+  {
+    id: 'cf-sat-backdoor-ultravnc',
+    codename: 'SAT-TNI: Backdoor UltraVNC — Sysmon EVTX',
+    domain: 'dfir',
+    date: '2024-02',
+    summary:
+      'SAT-TNI Operation Backdoor UltraVNC: 169 Sysmon events from Microsoft-Windows-Sysmon-Operational.evtx. Identified Preventivo24.02.14.exe.exe (double .exe, OriginalFileName Fattura 2 2024.exe, SHA256 0CB44C4F8273750FA40497FCA81E850F73927E70B13C8F80CDCFEE9D1478E6F3) via EID 1 T1204, Dropbox C2 162.125.81.15 (EID 22), dummy www.example.com 93.184.216.34 check (T1036 masquerading), and EID 3 network 93.184.216.34:80. Built python-evtx parsers for EID 1/3/11/22 distribution.',
+    role: 'DFIR analyst · SAT-TNI IR',
+    techniques: [
+      { attackId: 'T1204', name: 'User Execution' },
+      { attackId: 'T1036', name: 'Masquerading' },
+      { attackId: 'T1071', name: 'Application Layer Protocol' },
+    ],
+    outcomeMetric: '169 events · 6 EID1/56 EID11 · SHA256 + Dropbox C2 extracted',
+    links: [{ kind: 'writeup', url: null, label: 'WRITEUP_OPERATION_BACKDOOR_ULTRAVNC.md — on request' }],
+  },
+  {
+    id: 'cf-sat-dark-entry',
+    codename: 'SAT-TNI: Dark Entry — Disk + Mem + PCAP',
+    domain: 'dfir',
+    date: '2024-03',
+    summary:
+      'SAT-TNI Operation Dark Entry: CEO-US disk image (E01 AFF4), WebServer mem (memdump) + Ubuntu 5.3.0-70 profile, and traffic.pcapng. Correlated disk MFT (parse_mft_exe.py), memory Volatility pslist + syscalls, and Zeek pcap to reconstruct initial access, lateral movement, and data staging. Full chain of custody with UTC-normalized plaso timeline.',
+    role: 'DFIR lead · SAT-TNI IR',
+    techniques: [
+      { attackId: 'T1003', name: 'OS Credential Dumping' },
+      { attackId: 'T1048', name: 'Exfiltration Over Alternative Protocol' },
+      { attackId: 'T1055', name: 'Process Injection' },
+    ],
+    outcomeMetric: 'Disk + mem + pcap triaged · Volatility + Wireshark · IOCs on request',
+    links: [{ kind: 'writeup', url: null, label: 'Writeup_Operation_Dark_Entry.md — on request' }],
+  },
 ];
