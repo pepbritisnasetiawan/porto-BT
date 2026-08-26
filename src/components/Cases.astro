@@ -1,0 +1,214 @@
+---
+import { cases } from '../data/cases';
+
+const filters = [
+  { key: 'all', label: 'All' },
+  { key: 'dfir', label: 'DFIR' },
+  { key: 'detection', label: 'Detection' },
+  { key: 'malware', label: 'Malware RE' },
+  { key: 'hunt', label: 'Hunt' },
+];
+---
+
+<section class="section container cases-section" id="cases">
+  <header class="section-head reveal">
+    <p class="kicker">Evidence · {cases.length} case files</p>
+    <h2>Case files, structured like incident reports</h2>
+    <p class="lede">
+      Sanitized summaries of real engagements. Every file lists role, ATT&amp;CK
+      techniques and the measurable outcome. Sensitive details are redacted.
+    </p>
+  </header>
+
+  <div class="cases-filter reveal" role="tablist" aria-label="Filter case files by domain">
+    {filters.map((f, i) => (
+      <button
+        type="button"
+        class={`filter-btn ${i === 0 ? 'is-active' : ''}`}
+        data-filter={f.key}
+        aria-pressed={i === 0 ? 'true' : 'false'}
+      >
+        {f.label}
+      </button>
+    ))}
+  </div>
+
+  <div class="cases-grid">
+    {cases.map((c) => (
+      <article
+        class="card case reveal"
+        id={`case-${c.id}`}
+        data-domain={c.domain}
+      >
+        <div class="case__head">
+          <span class="pill pill--accent">{c.codename}</span>
+          <time class="meta-label case__date">{c.date}</time>
+        </div>
+        <p class="case__summary">{c.summary}</p>
+        <dl class="case__meta">
+          <div><dt>Role</dt><dd>{c.role}</dd></div>
+          <div><dt>Outcome</dt><dd>{c.outcomeMetric}</dd></div>
+          <div>
+            <dt>ATT&amp;CK</dt>
+            <dd class="case__techs">
+              {c.techniques.map((t) => (
+                <span class="pill" title={`${t.attackId} — ${t.name}`}>{t.attackId}</span>
+              ))}
+            </dd>
+          </div>
+        </dl>
+        <footer class="case__links">
+          {c.links.map((l) =>
+            l.url ? (
+              <a href={l.url} rel={l.url.startsWith('http') ? 'noopener' : undefined} target={l.url.startsWith('http') ? '_blank' : undefined}>
+                {l.kind === 'repo' ? '[repo]' : '[writeup]'} {l.label}
+              </a>
+            ) : (
+              <span class="case__coming" aria-disabled="true">
+                {l.kind === 'repo' ? '[repo]' : '[writeup]'} {l.label}
+              </span>
+            ),
+          )}
+        </footer>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section-head {
+    margin-bottom: 40px;
+  }
+
+  .cases-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .filter-btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.is-active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .case {
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .case.hidden {
+    display: none;
+  }
+
+  .case__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .case__date {
+    margin: 0;
+  }
+
+  .case__summary {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .case__meta {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .case__meta dt {
+    float: left;
+    width: 72px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 3px;
+  }
+
+  .case__meta dd {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .case__techs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .case__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+    font-size: 13px;
+  }
+
+  .case__coming {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  @media (max-width: 800px) {
+    .cases-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.case');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter ?? 'all';
+      buttons.forEach((b) => {
+        b.classList.toggle('is-active', b === btn);
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      cards.forEach((card) => {
+        card.classList.toggle('hidden', f !== 'all' && card.dataset.domain !== f);
+      });
+    });
+  });
+</script>

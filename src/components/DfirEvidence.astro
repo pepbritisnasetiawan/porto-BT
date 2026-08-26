@@ -1,0 +1,153 @@
+---
+---
+
+<div class="dfir-evidence reveal">
+  <div class="dfir-evidence__head">
+    <span class="dfir-label"><span class="live-dot" aria-hidden="true"></span> EVIDENCE LOCKER · CHAIN OF CUSTODY — UTC</span>
+    <span class="dfir-case">CASE IR-2026-04-BLACKVAULT</span>
+  </div>
+
+  <div class="dfir-grid">
+    <div class="dfir-col">
+      <span class="dfir-kicker">Exhibits — 4</span>
+      <ul class="dfir-list" role="list">
+        <li><code class="dfir-hash">E01</code> <span>128 GB · 9f4c…3a1e</span> <span class="dfir-verified">✓ VERIFIED</span></li>
+        <li><code class="dfir-hash">AFF4</code> <span>64 GB · 71b2…f09d</span> <span class="dfir-verified">✓</span></li>
+        <li><code class="dfir-hash">MEM</code> <span>32 GB · memdump.lime</span></li>
+        <li><code class="dfir-hash">EVTX</code> <span>2.1 GB · 4,812 events</span></li>
+      </ul>
+    </div>
+
+    <div class="dfir-col dfir-col--timeline">
+      <span class="dfir-kicker">Timeline — $MFT · USN · EVTX</span>
+      <div class="dfir-timeline" aria-hidden="true">
+        <div class="dfir-node"><span>ACQ</span><em>14:22</em></div>
+        <div class="dfir-line"></div>
+        <div class="dfir-node"><span>HASH</span><em>14:31</em></div>
+        <div class="dfir-line"></div>
+        <div class="dfir-node is-active"><span>TRIAGE</span><em>15:08</em></div>
+        <div class="dfir-line"></div>
+        <div class="dfir-node"><span>REPORT</span><em>18:40</em></div>
+      </div>
+      <p class="dfir-timeline__caption">UTC-normalized · plaso → mactime · 2026-04-12</p>
+    </div>
+
+    <div class="dfir-col dfir-col--hex">
+      <span class="dfir-kicker">MFT Record 142887 — hex preview</span>
+      <pre class="dfir-hex"><code>000000: 46 49 4C 45 30 00 03 00 <span class="hl">a3 f7</span> 9c 42 48 01 00 00  FILE0.......
+000010: 30 00 08 00 48 00 00 00 <span class="hl">ad 02</span> 00 00 00 04 00 00  0...H...........
+000020: 38 00 01 00 48 00 00 00 <span class="hl">10 00</span> 00 00 60 00 00 00  8...H.....`...
+<span class="dim"># $STANDARD_INFORMATION · $FILE_NAME · $DATA — FILE: svchost.exe (PID 4812)</span></code></pre>
+    </div>
+  </div>
+
+  <div class="dfir-foot">
+    <span>IOC SWEEP: 12 C2 · 14 hosts · 9f4c…3a1e</span>
+    <span class="dfir-sep">·</span>
+    <span>TOOLCHAIN: Volatility 3 · KAPE · Plaso · Chainsaw</span>
+    <span class="dfir-sep">·</span>
+    <span class="dfir-status">STATUS: CONTAINED</span>
+  </div>
+</div>
+
+<style>
+  .dfir-evidence {
+    border: 1px solid var(--rule-soft);
+    background: var(--bg-surface);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .dfir-evidence__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--rule-soft);
+    background: repeating-linear-gradient(90deg, var(--paper-rule) 0 1px, transparent 1px 8px);
+  }
+  .dfir-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--blueprint);
+    box-shadow: 0 0 0 4px var(--blueprint-tint);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.5 } }
+  @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+  .dfir-case {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--blueprint);
+    border: 1px solid var(--blueprint);
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--bg);
+  }
+  .dfir-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr 1.2fr;
+    gap: 0;
+  }
+  .dfir-col { padding: 16px; border-right: 1px solid var(--rule-soft); }
+  .dfir-col:last-child { border-right: none; }
+  .dfir-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 10px;
+  }
+  .dfir-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); }
+  .dfir-hash { background: var(--bg); border: 1px solid var(--rule-soft); padding: 1px 6px; border-radius: 6px; font-size: 11px; color: var(--ink); }
+  .dfir-verified { color: var(--blueprint); font-size: 10px; letter-spacing: 0.06em; }
+  .dfir-timeline { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .dfir-node { display: grid; justify-items: center; gap: 2px; font-family: var(--font-mono); font-size: 10px; }
+  .dfir-node span { letter-spacing: 0.08em; color: var(--ink-mute); }
+  .dfir-node em { font-style: normal; font-size: 11px; color: var(--ink); }
+  .dfir-node.is-active span { color: var(--blueprint); }
+  .dfir-node.is-active em { color: var(--blueprint); font-weight: 700; }
+  .dfir-node::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--bg); border: 1px solid var(--ink-mute); display: block; }
+  .dfir-node.is-active::before { background: var(--blueprint); border-color: var(--blueprint); }
+  .dfir-line { flex: 1; height: 1px; background: var(--rule-soft); }
+  .dfir-timeline__caption { font-family: var(--font-mono); font-size: 10px; color: var(--ink-mute); margin: 0; }
+  .dfir-hex { margin: 0; background: var(--bg); border: 1px solid var(--rule-soft); border-radius: 8px; padding: 10px 12px; font-size: 11px; line-height: 1.5; overflow-x: auto; }
+  .dfir-hex code { font-family: var(--font-mono); color: var(--ink-soft); white-space: pre; }
+  .dfir-hex .hl { color: var(--blueprint); font-weight: 700; background: var(--blueprint-tint); padding: 0 2px; border-radius: 3px; }
+  .dfir-hex .dim { color: var(--ink-mute); }
+  .dfir-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--rule-soft);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    background: var(--bg);
+  }
+  .dfir-sep { opacity: 0.35; }
+  .dfir-status { color: var(--blueprint); }
+  @media (max-width: 980px) {
+    .dfir-grid { grid-template-columns: 1fr; }
+    .dfir-col { border-right: none; border-bottom: 1px solid var(--rule-soft); }
+    .dfir-col:last-child { border-bottom: none; }
+  }
+</style>

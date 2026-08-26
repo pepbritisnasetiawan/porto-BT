@@ -1,0 +1,191 @@
+---
+import Base from '../layouts/Base.astro';
+import Terminal from '../components/Terminal.astro';
+import FigCarousel from '../components/FigCarousel.astro';
+import HeroDfirBoard from '../components/HeroDfirBoard.astro';
+import DfirEvidence from '../components/DfirEvidence.astro';
+import Marquee from '../components/Marquee.astro';
+import Stats from '../components/Stats.astro';
+import Specializations from '../components/Specializations.astro';
+import Cases from '../components/Cases.astro';
+import ArtifactSpotlight from '../components/ArtifactSpotlight.astro';
+import Certifications from '../components/Certifications.astro';
+import About from '../components/About.astro';
+import { profile } from '../data/profile';
+
+const terminalLines = [
+  { kind: 'cmd' as const, text: 'volatility3 -f memdump.lime windows.pslist' },
+  { kind: 'out' as const, text: 'suspicious process: svchost.exe (PID 4812) · parent: cmd.exe ⚠' },
+  { kind: 'cmd' as const, text: 'chainsaw query rules/ -m EVTX-5601.winx --json | jq .hits' },
+  { kind: 'out' as const, text: 'T1059.001 powershell encoded command · 4 hosts correlated' },
+  { kind: 'cmd' as const, text: 'python decryptor.py sample.bin --key lcg --out config.json' },
+  { kind: 'out' as const, text: 'C2 extracted: 185.x.x.x:443 · sleep: 30s ± jitter 15%' },
+];
+---
+
+<Base>
+  {/* ---------- HERO — masthead with DFIR board beside title (reference manual-masthead) ---------- */}
+  <section class="hero container" id="top">
+    <p class="meta-label hero__meta">
+      FIG_000 · SOC_247 · blue team v{new Date().getFullYear()} · dfir · detection engineering <span>evidence-driven · UTC-normalized</span>
+    </p>
+
+    <div class="hero__masthead">
+      <div class="hero__main">
+        <h1 class="hero__title">
+          Defending networks<br />
+          <em>from first principles.</em>
+        </h1>
+        <p class="lede hero__lede">{profile.tagline}</p>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#cases">View Case Files</a>
+          <a class="btn" href={profile.cvUrl}>Download CV ↓</a>
+          <a
+            class="btn"
+            href={profile.socials.find((s) => s.platform === 'github')?.url}
+            rel="noopener"
+            target="_blank"
+          >
+            GitHub ↗
+          </a>
+        </div>
+      </div>
+
+      <aside class="hero__side" aria-label="Incident response lifecycle">
+        <HeroDfirBoard />
+        <p class="hero__side-caption">NIST 800-61 — 6 steps, one loop. Currently in <strong>Identify → Contain</strong>; every lesson feeds the next preparation.</p>
+      </aside>
+    </div>
+
+    <DfirEvidence />
+
+    <div class="hero__grid">
+      <Terminal title="triage.sh — live workflow" lines={terminalLines} copyText="volatility3 -f memdump.lime windows.pslist && chainsaw query rules/ -m ." />
+      <FigCarousel />
+    </div>
+  </section>
+
+  <Marquee />
+  <Stats />
+  <Specializations />
+  <Cases />
+  <ArtifactSpotlight />
+  <Certifications />
+  <About />
+
+  <style>
+    .hero {
+      padding-block: clamp(64px, 10vw, 120px) 40px;
+    }
+
+    .hero__meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hero__meta span {
+      color: var(--blueprint);
+    }
+
+    .hero__masthead {
+      display: grid;
+      gap: 32px;
+      margin-top: 24px;
+    }
+
+    .hero__title {
+      font-size: clamp(44px, 7vw, 76px);
+      max-width: 14ch;
+    }
+
+    .hero__title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero__lede {
+      margin-top: 22px;
+    }
+
+    .hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .hero__side {
+      min-width: 0;
+    }
+    .hero__side-caption {
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      line-height: 1.5;
+    }
+
+    :global(.dfir-evidence) {
+      margin-top: 36px;
+    }
+
+    @media (min-width: 1280px) {
+      .hero__masthead {
+        grid-template-columns: minmax(0, 1fr) minmax(380px, 460px);
+        column-gap: clamp(32px, 4vw, 48px);
+        align-items: start;
+      }
+      .hero__side {
+        align-self: center;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .hero-board__body { padding: 16px 14px 10px; }
+      .hero-board__svg { transform: scale(1.04); transform-origin: center; }
+    }
+
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      margin-top: 32px;
+    }
+
+    .fig-svg {
+      width: 100%;
+      height: auto;
+      color: var(--ink);
+    }
+
+    :global(.fig-svg .svg-label) {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      fill: currentColor;
+    }
+
+    :global(.fig-svg .svg-sub) {
+      font-family: var(--mono);
+      font-size: 10px;
+      fill: var(--muted);
+    }
+
+    :global(.terminal .prompt) {
+      color: var(--code-prompt);
+    }
+
+    :global(.terminal .dim) {
+      color: rgba(215, 252, 233, 0.55);
+    }
+
+    @media (max-width: 900px) {
+      .hero__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Base>

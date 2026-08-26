@@ -1,0 +1,82 @@
+---
+const tools = [
+  'Volatility',
+  'Sigma',
+  'YARA',
+  'Suricata',
+  'Splunk',
+  'Elastic',
+  'Wazuh',
+  'Velociraptor',
+  'KAPE',
+  'Plaso',
+  'Ghidra',
+  'MISP',
+  'TheHive',
+  'MITRE ATT&CK',
+];
+---
+
+<section class="marquee-strip" aria-label="Trusted toolchain">
+  <p class="marquee-eyebrow">Trusted toolchain — the stack behind every case file</p>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="marquee-half">
+        {tools.map((t) => <span class="marquee-item"><span class="tick">·</span> {t}</span>)}
+      </div>
+      <div class="marquee-half" aria-hidden="true">
+        {tools.map((t) => <span class="marquee-item"><span class="tick">·</span> {t}</span>)}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee-strip {
+    border-block: 1px solid var(--line);
+    padding: 18px 0 20px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .marquee-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    margin: 0 0 12px;
+  }
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+  .marquee-half {
+    display: flex;
+    gap: 36px;
+    padding-right: 36px;
+    flex-shrink: 0;
+  }
+  .marquee-item {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  .marquee-item .tick { color: var(--accent); margin-right: 4px; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; transform: none; }
+    .marquee { mask-image: none; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .marquee-half[aria-hidden="true"] { display: none; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+  }
+</style>

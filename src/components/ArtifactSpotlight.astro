@@ -1,0 +1,55 @@
+---
+import { profile } from '../data/profile';
+const github = profile.socials.find((s) => s.platform === 'github')?.url ?? '#';
+---
+
+<section class="section artifact-section" id="artifacts">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="kicker">Artifacts — what ships, not what’s promised</p>
+      <h2>Detections, decryptors and reports worth keeping</h2>
+      <p class="lede">Every case file below leaves an artifact a peer can reproduce. No paywall, no hidden repo — the site is the living edition; every rule links back to its test.</p>
+    </header>
+
+    <div class="artifact-grid reveal">
+      <article class="artifact-card">
+        <p class="artifact-vol">Vol. I — Detection pack</p>
+        <h3>Sigma &amp; YARA — 31 rules</h3>
+        <p>LOBLin coverage (certutil, mshta, regsvr32) validated against Atomic Red Team. Each rule ships with test case, FP baseline and ATT&amp;CK mapping.</p>
+        <div class="artifact-links"><a href={github} target="_blank" rel="noopener">SIGMA REPO →</a><a href="#cases">CASE →</a></div>
+      </article>
+      <article class="artifact-card artifact-card--accent">
+        <p class="artifact-vol">Vol. II — Decryptor</p>
+        <h3>TR-2247 loader — Python</h3>
+        <p>Standalone RC4 + Base64 stage deobfuscator. Extracts C2 list and sleep config without executing the sample. Reproducible from static analysis only.</p>
+        <div class="artifact-links"><a href={github} target="_blank" rel="noopener">DECRYPTOR →</a><a href="#cases">CASE →</a></div>
+      </article>
+      <article class="artifact-card">
+        <p class="artifact-vol">Vol. III — Field notes</p>
+        <h3>DFIR playbooks — 3 suites</h3>
+        <p>Ransomware, BEC and insider workflows: evidence checklists, timeline templates, and disclosure-ready report scaffolds. Versioned and peer-reviewed.</p>
+        <div class="artifact-links"><a href={github} target="_blank" rel="noopener">PLAYBOOKS →</a><a href="#cases">REPORT →</a></div>
+      </article>
+    </div>
+
+    <p class="artifact-note">Clone the artifacts: <code>git clone {github}.git</code> · all artifacts MIT-licensed · <a href={`mailto:${profile.email}`}>request redacted reports via email</a></p>
+  </div>
+</section>
+
+<style>
+  .artifact-section { background: var(--surface); border-top: 1px solid var(--line); }
+  .section-head { margin-bottom: 40px; }
+  .artifact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .artifact-card { border: 1px solid var(--line); background: var(--bg); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; border-radius: 12px; }
+  .artifact-card--accent { border-left: 3px solid var(--accent); background: var(--accent-tint); }
+  .artifact-vol { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 0; }
+  .artifact-card h3 { font-family: var(--serif); font-size: 19px; margin: 0; }
+  .artifact-card p { font-size: 13px; color: var(--muted); margin: 0; flex: 1; }
+  .artifact-links { display: flex; gap: 10px; margin-top: 8px; }
+  .artifact-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--accent); border: 1px solid var(--accent); padding: 6px 10px; border-radius: 8px; text-decoration: none; }
+  .artifact-links a:hover { background: var(--accent); color: #fff; }
+  .artifact-note { margin-top: 16px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .artifact-note code { background: var(--bg); border: 1px solid var(--line); padding: 2px 6px; border-radius: 6px; }
+  @media (max-width: 900px) { .artifact-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 640px) { .artifact-grid { grid-template-columns: 1fr; } }
+</style>

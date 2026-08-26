@@ -1,0 +1,28 @@
+---
+interface Props {
+  label: string;
+  caption: string;
+}
+const { label, caption } = Astro.props;
+---
+
+<figure class="fig reveal">
+  <div class="fig__frame">
+    <slot />
+  </div>
+  <figcaption class="meta-label">{label} · {caption}</figcaption>
+</figure>
+
+<style>
+  .fig {
+    margin: 0;
+  }
+
+  .fig__frame {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    padding: clamp(16px, 3vw, 32px);
+    margin-bottom: 14px;
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+interface TerminalLine { kind: 'cmd' | 'out'; text: string; }
+interface Props { title: string; lines: TerminalLine[]; copyText?: string; }
+const { title, lines, copyText } = Astro.props;
+---
+<div class="terminal">
+  <div class="terminal__bar">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="terminal__title">{title}</span>
+    {copyText && (<button class="copy-btn" type="button" data-copy={copyText}>copy</button>)}
+  </div>
+  <pre><code>{lines.map((l) => (<span class={l.kind === 'out' ? 'line--out' : undefined}><span class="prompt" aria-hidden="true">{l.kind === 'cmd' ? '$ ' : '→ '}</span>{l.text}
+</span>))}</code></pre>
+</div>
+<style>
+
+  .terminal { background: var(--code-bg); color: var(--code-ink); border-radius: 14px; overflow: hidden; font-size: 13px; }
+  .terminal__bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+  .dot:first-child { background: #f87171; }
+  .dot:nth-child(2) { background: #fbbf24; }
+  .dot:nth-child(3) { background: #34d399; }
+  .terminal__title { margin-left: 8px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.6; }
+  .copy-btn { margin-left: auto; font-family: inherit; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; background: transparent; color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.2); border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+  .copy-btn:hover,.copy-btn.copied { color: #5eead4; border-color: #5eead4; }
+  pre { margin: 0; padding: 18px 20px; overflow-x: auto; }
+  pre code { white-space: pre-wrap; word-break: break-word; }
+  .line--out { color: rgba(215,252,233,0.62); }
+  .prompt { color: var(--code-prompt); }
+
+</style>
+<script>
+  document.querySelectorAll(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.dataset.copy ?? "";
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "copied";
+        setTimeout(() => btn.textContent = "copy", 1600);
+      } catch {}
+    });
+  });
+</script>

@@ -1,0 +1,134 @@
+---
+import { certifications } from '../data/certifications';
+import { writeups } from '../data/writeups';
+---
+
+<section class="section certs-section" id="certs">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="kicker">Independent verification · {certifications.filter((c) => c.status === 'held').length} held</p>
+      <h2>Certifications &amp; published work</h2>
+      <p class="lede">
+        Credentials prove the baseline; writeups prove the craft. Both are listed here,
+        verifiable by anyone who asks.
+      </p>
+    </header>
+
+    <ul class="cert-grid reveal" role="list">
+      {certifications.map((c) => (
+        <li class={`cert ${c.status === 'in-progress' ? 'cert--progress' : ''}`}>
+          <span class="cert__code">{c.code}</span>
+          <span class="cert__issuer">{c.issuer}</span>
+          <span class="cert__year">
+            {c.year}{c.status === 'in-progress' ? ' · in progress' : ''}
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <ul class="writeups reveal" role="list">
+      {writeups.map((w) => (
+        <li class="writeup">
+          <div>
+            {w.url ? (
+              <a href={w.url} class="writeup__title">{w.title} ↗</a>
+            ) : (
+              <span class="writeup__title writeup__title--coming" aria-disabled="true">{w.title} <span class="pill">coming soon</span></span>
+            )}
+            <p class="writeup__summary">{w.summary}</p>
+            <p class="writeup__meta">{w.published} · {w.tags.join(' · ')}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .certs-section {
+    background: var(--surface);
+  }
+
+  .section-head {
+    margin-bottom: 44px;
+  }
+
+  .cert-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 0 0 48px;
+    padding: 0;
+  }
+
+  .cert {
+    display: grid;
+    gap: 4px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg);
+  }
+
+  .cert--progress {
+    border-style: dashed;
+  }
+
+  .cert__code {
+    font-family: var(--serif);
+    font-size: 22px;
+  }
+
+  .cert__issuer {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .cert__year {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .writeups {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .writeup {
+    padding-block: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .writeup__title {
+    font-family: var(--serif);
+    font-size: 19px;
+  }
+
+  .writeup__title--coming {
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .writeup__summary {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  .writeup__meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+</style>

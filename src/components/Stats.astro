@@ -1,0 +1,83 @@
+---
+import { profile } from '../data/profile';
+---
+
+<section class="stats section">
+  <div class="container stats__grid reveal">
+    {profile.stats.map((s) => (
+      <div class="stats__item">
+        <span class="stats__value" data-count={s.value} data-suffix={s.suffix}>
+          0{s.suffix}
+        </span>
+        <span class="stats__label">{s.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .stats {
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+  }
+
+  .stats__item {
+    display: grid;
+    gap: 6px;
+    padding-inline: 20px;
+    border-left: 1px solid var(--line);
+  }
+
+  .stats__value {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats__label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  function animate(el: HTMLElement) {
+    const target = Number(el.dataset.count ?? 0);
+    const suffix = el.dataset.suffix ?? '';
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      el.textContent = `${target}${suffix}`;
+      return;
+    }
+    const dur = 900;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const p = Math.min((t - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = `${Math.round(target * eased)}${suffix}`;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  const statsEl = document.querySelector('.stats');
+  if (statsEl && 'IntersectionObserver' in window) {
+    let done = false;
+    new IntersectionObserver((entries, io) => {
+      if (!done && entries.some((e) => e.isIntersecting)) {
+        done = true;
+        document.querySelectorAll<HTMLElement>('.stats__value').forEach(animate);
+        io.disconnect();
+      }
+    }).observe(statsEl);
+  }
+</script>

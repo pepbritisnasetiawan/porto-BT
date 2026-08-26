@@ -1,0 +1,124 @@
+---
+import { profile, timeline, skillMatrix } from '../data/profile';
+---
+
+<section class="section container" id="about">
+  <header class="section-head reveal">
+    <p class="kicker">About</p>
+    <h2>Blue teamer who reads the raw bytes</h2>
+    <p class="lede">
+      I started on the SOC floor and moved toward the evidence: memory images, disk
+      artifacts and disassembly. My rule is static-before-dynamic, telemetry-before-testimony,
+      and every finding must survive a hostile defense counsel — or a hostile peer review.
+    </p>
+  </header>
+
+  <div class="about__grid">
+    <div class="timeline reveal">
+      <span class="meta-label">Career timeline</span>
+      {timeline.map((t) => (
+        <div class="timeline__item">
+          <span class="timeline__period">{t.period}</span>
+          <h3 class="timeline__role">{t.role}</h3>
+          <p class="timeline__org">{t.org}</p>
+          <p class="timeline__note">{t.note}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="skills reveal">
+      <span class="meta-label">Skills matrix</span>
+      {skillMatrix.map((group) => (
+        <div class="skills__group">
+          <h4 class="skills__area">{group.area}</h4>
+          <ul role="list">
+            {group.items.map((i) => <li class="pill">{i}</li>)}
+          </ul>
+        </div>
+      ))}
+      <p class="skills__loc meta-label">Based in {profile.location} · remote-friendly</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-head {
+    margin-bottom: 48px;
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 64px;
+  }
+
+  .timeline {
+    border-left: 1px solid var(--line);
+    padding-left: 28px;
+    display: grid;
+    gap: 32px;
+    align-content: start;
+  }
+
+  .timeline__item {
+    position: relative;
+  }
+
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    left: -33px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .timeline__period,
+  .timeline__org {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .timeline__role {
+    font-size: 19px;
+    margin-block: 4px 2px;
+  }
+
+  .timeline__note {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .skills {
+    display: grid;
+    gap: 24px;
+    align-content: start;
+  }
+
+  .skills__area {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+
+  .skills ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-width: 800px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+  }
+</style>

@@ -1,0 +1,10 @@
+# porto
+
+> Security Engineer · DFIR · Blue Team · SOC Analyst — portfolio for unamed.
+> Evidence-driven case files, detection engineering, malware RE, threat hunting. Built with Astro.
+
+- Canonical: https://example.com/
+- Contact: you@example.com
+- Stack: Astro 5 static, zero trackers
+- Data model: docs/DATA-MODEL.md
+- Source: replace with your GitHub URL before publishing

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img">
+  <rect width="1200" height="630" fill="#faf9f5"/>
+  <rect x="24" y="24" width="1152" height="582" fill="none" stroke="#e3ded4" stroke-width="2"/>
+  <text x="48" y="56" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="0.12em" fill="#6b645a">SOC_247 · BLUE TEAM · DFIR · DETECTION</text>
+  <text x="48" y="150" font-family="Newsreader, Georgia, serif" font-size="78" fill="#16130e">Defending networks</text>
+  <text x="48" y="235" font-family="Newsreader, Georgia, serif" font-size="78" font-style="italic" fill="#3353ff">from first principles.</text>
+  <text x="48" y="295" font-family="IBM Plex Mono, monospace" font-size="16" fill="#6b645a">Every incident reconstructed from raw telemetry. Every detection built before a tool gets trusted.</text>
+  <rect x="48" y="360" width="680" height="140" rx="16" fill="#16130e"/>
+  <circle cx="72" cy="384" r="6" fill="#f87171"/><circle cx="92" cy="384" r="6" fill="#fbbf24"/><circle cx="112" cy="384" r="6" fill="#34d399"/>
+  <text x="140" y="388" font-family="IBM Plex Mono, monospace" font-size="12" letter-spacing="0.08em" fill="rgba(255,255,255,0.55)">TRIAGE.SH — LIVE WORKFLOW</text>
+  <text x="72" y="420" font-family="IBM Plex Mono, monospace" font-size="14" fill="#5eead4">$</text>
+  <text x="90" y="420" font-family="IBM Plex Mono, monospace" font-size="13" fill="#d7fce9">volatility3 -f memdump.lime windows.pslist</text>
+  <text x="72" y="445" font-family="IBM Plex Mono, monospace" font-size="13" fill="rgba(215,252,233,0.55)">→ svchost.exe (PID 4812) · parent: cmd.exe ⚠</text>
+  <text x="72" y="470" font-family="IBM Plex Mono, monospace" font-size="13" fill="#d7fce9">chainsaw query rules/ --json | jq .hits</text>
+  <text x="920" y="580" font-family="IBM Plex Mono, monospace" font-size="14" fill="#6b645a">unamed — Security Engineer</text>
+</svg>

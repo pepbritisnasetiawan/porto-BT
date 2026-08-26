@@ -1,0 +1,90 @@
+---
+import { specializations } from '../data/specializations';
+
+const domainLabels: Record<string, string> = {
+  dfir: 'DFIR',
+  detection: 'Detection',
+  malware: 'Malware RE',
+  hunt: 'Hunting',
+  soc: 'SOC Ops',
+  cloud: 'Cloud',
+};
+---
+
+<section class="section container" id="specializations">
+  <header class="section-head reveal">
+    <p class="kicker">How this works</p>
+    <h2>Choose the capability you need on your team</h2>
+    <p class="lede">
+      Each specialization is backed by real case files — not course certificates alone.
+      Open a case to see the evidence, the MITRE mapping and the outcome.
+    </p>
+  </header>
+
+  <div class="spec-grid">
+    {specializations.map((s) => (
+      <article class="card reveal" id={s.id}>
+        <p class="kicker">{s.kicker}</p>
+        <h3 class="card__title">{s.title}</h3>
+        <p class="card__blurb">{s.blurb}</p>
+        <ul class="card__tools" role="list">
+          {s.tools.map((t) => <li class="pill">{t}</li>)}
+        </ul>
+        {s.caseRef && (
+          <a class="card__link" href={`#case-${s.caseRef}`}>Open case file →</a>
+        )}
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section-head {
+    margin-bottom: 48px;
+  }
+
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    transition: transform 140ms ease, border-color 140ms ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+
+  .card__title {
+    font-size: 22px;
+  }
+
+  .card__blurb {
+    color: var(--muted);
+    font-size: 14px;
+    flex-grow: 1;
+  }
+
+  .card__tools {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card__link {
+    font-size: 13px;
+  }
+</style>

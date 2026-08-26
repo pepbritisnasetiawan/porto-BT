@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="404 — Signal lost">
+  <section class="nf container">
+    <p class="meta-label">ERR_404 · page not found</p>
+    <h1 class="nf__title">Signal lost.</h1>
+    <p class="lede">
+      This artifact is not in the evidence locker. It may have been deleted, moved,
+      or wiped by an attacker clearing tracks.
+    </p>
+    <a class="btn btn--primary" href="/">Return to base</a>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: clamp(96px, 18vw, 180px);
+  }
+
+  .nf__title {
+    font-size: clamp(44px, 7vw, 76px);
+  }
+</style>
